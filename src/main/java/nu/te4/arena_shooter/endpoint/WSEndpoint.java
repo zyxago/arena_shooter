@@ -2,20 +2,20 @@ package nu.te4.arena_shooter.endpoint;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
+import javax.json.*;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+
+import nu.te4.arena_shooter.entities.Map;
+import nu.te4.arena_shooter.entities.Point;
+import nu.te4.arena_shooter.entities.tiles.Tile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
  * @author erikh
  */
 @ServerEndpoint("/endpoint")
@@ -27,7 +27,14 @@ public class WSEndpoint {
 
     @OnMessage
     public void onMessage(String message, Session user) {
-
+        try {
+            if(user.getUserProperties().get("username") == null) {
+                user.getUserProperties().put("username", message);
+                user.getBasicRemote().sendText(buildMessage(message));
+            }
+        }catch (Exception e){
+            LOGGER.error("Error in WSEndpoint.onMessage" + e.getMessage());
+        }
     }
 
     @OnOpen
@@ -35,7 +42,7 @@ public class WSEndpoint {
         LOGGER.debug("New Session created");
         SESSIONS.add(user);
         try {
-            user.getBasicRemote().sendText(newUserMessage("User Connected"));
+            user.getBasicRemote().sendText(newUserMessage());
             user.getBasicRemote().sendText(sendCurrentGameState());
         } catch (Exception e) {
             LOGGER.error("Error in WSEndpoint.open: " + e.getMessage());
@@ -48,27 +55,27 @@ public class WSEndpoint {
         SESSIONS.remove(user);
     }
 
-    private String newUserMessage(String msg) {
+    private String buildMessage(String msg){
         JsonObject jsonMessage = Json.createObjectBuilder()
-                .add("newUser", msg)
+                .add("type", "username")
+                .add("username", msg)
+                .build();
+        return jsonMessage.toString();
+    }
+
+    private String newUserMessage() {
+        JsonObject jsonMessage = Json.createObjectBuilder()
+                .add("type", "newUser")
                 .build();
         return jsonMessage.toString();
     }
 
     private String sendCurrentGameState() {
-        int[][] grid = new int[16][16];
-        JsonArrayBuilder jsonArrayBuilderY = Json.createArrayBuilder();
-        
-        for (int y = 0; y < grid.length; y++) {
-            int lengthX = grid[y].length;
-            JsonArrayBuilder jsonArrayBuilderX = Json.createArrayBuilder();
-            for (int x = 0; x < lengthX; x++) {
-                jsonArrayBuilderX.add(grid[y][x]);
-            }
-            jsonArrayBuilderY.add(jsonArrayBuilderX.build());
-        }
-        JsonObject jsonMessage = Json.createObjectBuilder()
-                .add("map", jsonArrayBuilderY.build().toString())
+        Map map = new Map();
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObject jsonMessage = factory.createObjectBuilder()
+                .add("type", "map")
+                .add("map", factory.createObjectBuilder(map.toJson()))
                 .build();
         return jsonMessage.toString();
     }

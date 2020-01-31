@@ -1,5 +1,8 @@
 package nu.te4.arena_shooter.entities;
 
+import javax.json.Json;
+import javax.json.JsonBuilderFactory;
+
 /**
  *
  * @author erikh
@@ -28,5 +31,5 @@ public class Point {
     public void setX(int x) {
         this.x = x;
     }
-    
+
 }

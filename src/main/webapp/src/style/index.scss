@@ -1,0 +1,15 @@
+@charset "utf-8";
+@import "../../node_modules/bulma/bulma.sass";
+
+html {
+  background-color: beige;
+}
+
+body {
+  margin: 10px 10px 10px 10px;
+}
+
+.column {
+  flex-grow: 0;
+  flex-basis: auto;
+}
