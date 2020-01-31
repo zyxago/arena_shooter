@@ -16,6 +16,7 @@ public class Map {
     private static final Logger LOGGER = LoggerFactory.getLogger(Map.class);
 
     private Tile[][] grid = new Tile[16][16];
+    //TODO lista med spelare & fixa så att Tile[][] grid inte kan ha några null värden
 
     public Map() {
     }
