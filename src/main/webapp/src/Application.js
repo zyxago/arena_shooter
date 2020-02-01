@@ -1,7 +1,7 @@
-import {createLobbies} from "../logic/lobbies";
-import Player from "./Player";
-import Canvas from "./Canvas";
-import Game from "./Game";
+import {createLobbies} from "./logic/lobbies";
+import Player from "./entities/Player";
+import Canvas from "./entities/Canvas";
+import Game from "./entities/Game";
 
 export default class Application {
     constructor() {

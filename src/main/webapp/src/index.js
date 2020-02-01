@@ -1,3 +1,3 @@
-import Application from "./entities/Application";
+import Application from "./Application";
 
 const app = new Application();
