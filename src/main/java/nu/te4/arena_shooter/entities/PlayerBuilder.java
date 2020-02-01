@@ -1,8 +1,5 @@
 package nu.te4.arena_shooter.entities;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.awt.*;
 
 public class PlayerBuilder {
@@ -13,14 +10,12 @@ public class PlayerBuilder {
     private int playerNr;
     private Point point;
 
-    private final Logger LOGGER = LoggerFactory.getLogger(PlayerBuilder.class);
 
     public PlayerBuilder() {
 
     }
 
     public Player build() throws IllegalStateException{
-        LOGGER.info("tralalalalalal");
         if(color == null) {
             throw new IllegalStateException("Color must be set!");
         }

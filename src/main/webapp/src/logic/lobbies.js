@@ -11,9 +11,10 @@ export function createLobbies(amount){
 
         label.className = "label";
         label.htmlFor = `lobby:${i}`;
+        label.innerHTML = `lobby:${i}`;
 
         textarea.id = `lobby:${i}`;
-        textarea.readOnly;
+        textarea.readOnly = true;
         textarea.cols = 18;
         textarea.rows = 8;
 
