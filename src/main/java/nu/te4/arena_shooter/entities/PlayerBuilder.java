@@ -1,68 +1,65 @@
 package nu.te4.arena_shooter.entities;
 
-import java.awt.Color;
-import java.util.List;
+import java.awt.*;
 
-/**
- *
- * @author erikh
- */
-public class Player extends Entity implements Moveable{
+public class PlayerBuilder {
     private int hp;
     private int maxHp;
     private int dmg;
     private Color color;
     private int playerNr;
 
-    public Player(PlayerBuilder build){
-        hp = build.getHp();
-        maxHp = build.getMaxHp();
-        dmg = build.getDmg();
-        color = build.getColor();
-        playerNr = build.getPlayerNr();
+    public PlayerBuilder(){
+
+    }
+
+    //TODO kolla så att man inte kan ange konstiga värden såsom dmg = -1
+    public Player build(){
+        return new Player(this);
     }
 
     public int getHp() {
         return hp;
     }
 
-    public void setHp(int hp) {
+    public PlayerBuilder Hp(int hp) {
         this.hp = hp;
+        return this;
     }
 
     public int getMaxHp() {
         return maxHp;
     }
 
-    public void setMaxHp(int maxHp) {
+    public PlayerBuilder MaxHp(int maxHp) {
         this.maxHp = maxHp;
+        return this;
     }
 
     public int getDmg() {
         return dmg;
     }
 
-    public void setDmg(int dmg) {
+    public PlayerBuilder Dmg(int dmg) {
         this.dmg = dmg;
+        return this;
     }
 
     public Color getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public PlayerBuilder Color(Color color) {
         this.color = color;
+        return this;
     }
 
     public int getPlayerNr() {
         return playerNr;
     }
 
-    public void setPlayerNr(int playerNr) {
+    public PlayerBuilder PlayerNr(int playerNr) {
         this.playerNr = playerNr;
-    }
-
-    public boolean move(Point newPos){
-        return false;
+        return this;
     }
 }

@@ -1,10 +1,13 @@
-export default class Map{
-    constructor({grid}) {
+export default class Game{
+    constructor({grid, players, bullets, items}) {
         this.grid = grid;
+        this.players = players;
+        this.bullets = bullets;
+        this.items = items
     }
 
     draw(ctx){
-        const size = ctx.canvas.width/16;
+        const size = ctx.canvas.width/this.grid.length;
         for(let y = 0; y < this.grid.length; y++){
             for(let x = 0; x < this.grid[y].length; x++){
                 if(!this.grid[y][x].solid){

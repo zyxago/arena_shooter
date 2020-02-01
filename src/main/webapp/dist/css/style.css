@@ -7110,3 +7110,7 @@ body {
 .column {
   flex-grow: 0;
   flex-basis: auto; }
+
+#canvas {
+  background-color: white;
+  border: 1px solid black; }
