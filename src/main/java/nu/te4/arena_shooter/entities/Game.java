@@ -64,6 +64,7 @@ public class Game {
 
     /**
      * Converts this object to JsonObject
+     *
      * @return this obj as JsonObject
      */
     private JsonObject toJson() {
@@ -84,9 +85,9 @@ public class Game {
 
         //Creates JsonArray of players
         JsonArrayBuilder jsonPlayers = factory.createArrayBuilder();
-            for(int i = 0; i < getPlayers().size(); i++){
-
-            }
+        for (int i = 0; i < getPlayers().size(); i++) {
+            jsonPlayers.add(factory.createObjectBuilder(getPlayers().get(i).toJson()));
+        }
 
         return factory.createObjectBuilder()
                 .add("grid", factory.createArrayBuilder(gridRows.build()))

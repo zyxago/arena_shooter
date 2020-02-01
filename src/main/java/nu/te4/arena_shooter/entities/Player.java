@@ -1,5 +1,9 @@
 package nu.te4.arena_shooter.entities;
 
+import javax.json.Json;
+import javax.json.JsonBuilderFactory;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import java.awt.Color;
 import java.util.List;
 
@@ -15,6 +19,7 @@ public class Player extends Entity implements Moveable{
     private int playerNr;
 
     public Player(PlayerBuilder build){
+        super(build.getPoint());
         hp = build.getHp();
         maxHp = build.getMaxHp();
         dmg = build.getDmg();
@@ -64,5 +69,17 @@ public class Player extends Entity implements Moveable{
 
     public boolean move(Point newPos){
         return false;
+    }
+
+    public JsonObject toJson(){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObjectBuilder player = factory.createObjectBuilder();
+        return player.add("hp", getHp())
+                .add("maxHp", getMaxHp())
+                .add("dmg", getDmg())
+                .add("color", "rgb("+getColor().getRed()+','+getColor().getGreen()+','+getColor().getBlue()+')')
+                .add("playerNr", getPlayerNr())
+                .add("point", factory.createObjectBuilder(getPoint().toJson()))
+                .build();
     }
 }

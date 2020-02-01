@@ -2,6 +2,7 @@ package nu.te4.arena_shooter.entities;
 
 import nu.te4.arena_shooter.entities.tiles.Tile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameBuilder {
@@ -13,8 +14,19 @@ public class GameBuilder {
     public GameBuilder() {
     }
 
-    //TODO kolla så att man inte kan ange konstiga värden såsom players = null
-    public Game build() {
+    public Game build() throws IllegalStateException{
+        if(getGrid() == null){
+            throw new IllegalStateException("Grid must be set!");
+        }
+        if(getPlayers() == null){
+            throw new IllegalStateException("players must be set!");
+        }
+        if(getItems() == null){
+            items = new ArrayList<>();
+        }
+        if(getBullets() == null){
+            bullets = new ArrayList<>();
+        }
         return new Game(this);
     }
 

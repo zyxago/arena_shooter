@@ -3,14 +3,15 @@ package nu.te4.arena_shooter.endpoint;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import javax.json.*;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import nu.te4.arena_shooter.JsonMessenger;
 import nu.te4.arena_shooter.entities.*;
+import nu.te4.arena_shooter.entities.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,40 +27,41 @@ public class WSEndpoint {
 
     @OnMessage
     public void onMessage(String message, Session user) {
-        LOGGER.info(message);
+        LOGGER.info("Message: " + message);
         String msgType = message.substring(0, message.indexOf(':'));
         message = message.substring(message.indexOf(':') + 1);
-        try {//TODO bryt upp i funktioner
+
+        try {//TODO bryt upp i funktioner om det går
             if (user.getUserProperties().get("username") == null && msgType.equals("name")) {
                 user.getUserProperties().put("username", message);
                 user.getUserProperties().put("lobby", "0");
-                for (Session session : SESSIONS) {
-                    session.getBasicRemote().sendText(updateUsers());
-                }
+                broadcastMessege(JsonMessenger.getJsonMessenger().updateUsersMessage(SESSIONS));
+
             } else if (msgType.equals("join")) {
                 user.getUserProperties().put("lobby", message);
-                for (Session session : SESSIONS) {
-                    session.getBasicRemote().sendText(updateUsers());
-                }
+                broadcastMessege(JsonMessenger.getJsonMessenger().updateUsersMessage(SESSIONS));
+
             } else if (msgType.equals("start")) {
                 int lobby = Integer.parseInt((String) user.getUserProperties().get("lobby"));
                 List<Player> players = new ArrayList<>();
                 for (Session session : SESSIONS) {
-                    if (Integer.parseInt((String) session.getUserProperties().get("lobby")) == lobby) {
+                    if ((session.getUserProperties().get("lobby")).equals(Integer.toString(lobby))) {
                         players.add(new PlayerBuilder()
+                                .Point(new Point(0,0))
                                 .Color(Color.blue)
                                 .Dmg(1)
                                 .Hp(3)
                                 .MaxHp(3)
                                 .PlayerNr(Integer.parseInt((String) session.getUserProperties().get("playerNr")))
                                 .build());
+                        LOGGER.info("Player added to list!");
                     }
                 }
                 GAMES.put(lobby, new GameBuilder()
-                        .Grid(new GridFactory().getGrid(16, 16, 0, 0))
+                        .Grid(new GridFactory().getGrid(16, 16, .2f, 0))
                         .Players(players)
                         .build());
-                sendGameState(lobby);
+                JsonMessenger.getJsonMessenger().gameStateMessage(SESSIONS, GAMES.get(lobby));
             }
         } catch (Exception e) {
             LOGGER.error("Error in WSEndpoint.onMessage" + e.getMessage());
@@ -70,10 +72,10 @@ public class WSEndpoint {
     public void open(Session user) {
         LOGGER.debug("New Session created");
         SESSIONS.add(user);
-        user.getUserProperties().put("playerNr", SESSIONS.size());//TODO fixa bättre lösning, om någon avbryter sin anslutning så kan nästa få samma nummer som någon annan
+        user.getUserProperties().put("playerNr", Integer.toString(SESSIONS.size()));//TODO fixa bättre lösning, om någon avbryter sin anslutning så kan nästa få samma nummer som någon annan
         try {
-            user.getBasicRemote().sendText(newUserMessage());
-            user.getBasicRemote().sendText(lobbyMessage());
+            user.getBasicRemote().sendText(JsonMessenger.getJsonMessenger().newUserMessage());
+            user.getBasicRemote().sendText(JsonMessenger.getJsonMessenger().lobbyMessage());
         } catch (Exception e) {
             LOGGER.error("Error in WSEndpoint.open: " + e.getMessage());
         }
@@ -85,55 +87,15 @@ public class WSEndpoint {
         SESSIONS.remove(user);
     }
 
-    //========================================================================================
-    //TODO skapa någon form av message klass, och ha alla funktioner angående meddelanden där
-
-    private void sendGameState(int lobby) {
+    public void broadcastMessege(String msg) {
         try {
             for (Session session : SESSIONS) {
-                if (Integer.parseInt((String) session.getUserProperties().get("lobby")) == lobby) {
-                    session.getBasicRemote().sendText(GAMES.get(lobby).jsonStringGame());
-                }
+                session.getBasicRemote().sendText(msg);
             }
         } catch (Exception e) {
-            LOGGER.error("Error in WSEndpoint.sendGameState: " + e.getMessage());
+            LOGGER.error("Error in WSEndpoint.broadcastMessage: " + e.getMessage());
         }
 
-    }
-
-    private String updateUsers() {
-        JsonBuilderFactory factory = Json.createBuilderFactory(null);
-        JsonObject jsonMessage = Json.createObjectBuilder()
-                .add("type", "updateUsers")
-                .add("users", factory.createArrayBuilder(usersJson()))
-                .build();
-        return jsonMessage.toString();
-    }
-
-    private String lobbyMessage() {
-        JsonObject jsonMessage = Json.createObjectBuilder()
-                .add("type", "lobbyCount")
-                .add("lobbies", 4)
-                .build();
-        return jsonMessage.toString();
-    }
-
-    private JsonArray usersJson() {
-        JsonBuilderFactory factory = Json.createBuilderFactory(null);
-        JsonArrayBuilder jsonUser = factory.createArrayBuilder();
-        for (Session user : SESSIONS) {
-            jsonUser.add(factory.createObjectBuilder()
-                    .add("username", (String) user.getUserProperties().get("username"))
-                    .add("lobby", (String) user.getUserProperties().get("lobby")));
-        }
-        return jsonUser.build();
-    }
-
-    private String newUserMessage() {
-        JsonObject jsonMessage = Json.createObjectBuilder()
-                .add("type", "newUser")
-                .build();
-        return jsonMessage.toString();
     }
 
 }

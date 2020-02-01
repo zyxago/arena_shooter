@@ -67,11 +67,12 @@ export default class Application {
 
     createGame(game) {
         this.game = new Game(game);
+        requestAnimationFrame(()=>this.draw());
     }
 
     newUser() {
         let name = prompt("Enter your player name: ", "");
-        if (name === "") {
+        if (name === "" || name === null) {
             name = "RandomGuy#" + Math.floor(Math.random() * 10000);
         }
         this.send("name", name);
@@ -92,6 +93,10 @@ export default class Application {
                 document.getElementById(`lobby:${user.lobby}`).value += output;
             }
         }
+    }
 
+    draw(){
+        this.game.draw(this.canvas.ctx);
+        requestAnimationFrame(()=>this.draw());
     }
 }

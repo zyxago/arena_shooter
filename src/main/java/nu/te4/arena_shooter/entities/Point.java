@@ -2,6 +2,8 @@ package nu.te4.arena_shooter.entities;
 
 import javax.json.Json;
 import javax.json.JsonBuilderFactory;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 /**
  *
@@ -30,6 +32,13 @@ public class Point {
 
     public void setX(int x) {
         this.x = x;
+    }
+
+    public JsonObject toJson(){
+        JsonObjectBuilder point = Json.createObjectBuilder();
+        return point.add("x", getX())
+                .add("y", getY())
+                .build();
     }
 
 }

@@ -1,5 +1,8 @@
 package nu.te4.arena_shooter.entities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.*;
 
 public class PlayerBuilder {
@@ -8,14 +11,44 @@ public class PlayerBuilder {
     private int dmg;
     private Color color;
     private int playerNr;
+    private Point point;
 
-    public PlayerBuilder(){
+    private final Logger LOGGER = LoggerFactory.getLogger(PlayerBuilder.class);
+
+    public PlayerBuilder() {
 
     }
 
-    //TODO kolla så att man inte kan ange konstiga värden såsom dmg = -1
-    public Player build(){
+    public Player build() throws IllegalStateException{
+        LOGGER.info("tralalalalalal");
+        if(color == null) {
+            throw new IllegalStateException("Color must be set!");
+        }
+        if(hp <= 0){
+            hp = 1;
+        }
+        if(maxHp <= 0){
+            maxHp = 1;
+        }
+        if(dmg <= 0){
+            dmg = 1;
+        }
+        if(playerNr <= 0){
+            throw new IllegalStateException("Player number must be set!");
+        }
+        if(point == null){
+            point = new Point(0,0);
+        }
         return new Player(this);
+    }
+
+    public Point getPoint() {
+        return point;
+    }
+
+    public PlayerBuilder Point(Point point) {
+        this.point = point;
+        return this;
     }
 
     public int getHp() {
