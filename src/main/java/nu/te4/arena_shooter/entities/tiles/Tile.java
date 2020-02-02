@@ -1,12 +1,12 @@
 package nu.te4.arena_shooter.entities.tiles;
 
+import nu.te4.arena_shooter.interfaces.Spawer;
 import nu.te4.arena_shooter.entities.Entity;
 import nu.te4.arena_shooter.entities.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.json.Json;
-import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 

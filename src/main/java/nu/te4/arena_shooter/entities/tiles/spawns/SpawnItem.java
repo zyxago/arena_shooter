@@ -5,7 +5,7 @@
  */
 package nu.te4.arena_shooter.entities.tiles.spawns;
 
-import nu.te4.arena_shooter.entities.tiles.Spawer;
+import nu.te4.arena_shooter.interfaces.Spawer;
 
 /**
  *

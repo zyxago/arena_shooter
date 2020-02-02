@@ -6,25 +6,29 @@ export default class Game{
         this.items = items
     }
 
+    /**
+     * Draws current game state to canvas
+     * @param ctx Canvas context
+     */
     draw(ctx){
-        const size = ctx.canvas.width/this.grid.length;
-        for(let y = 0; y < this.grid.length; y++){
-            for(let x = 0; x < this.grid[y].length; x++){
-                if(!this.grid[y][x].tile.solid){
-                    ctx.fillStyle = "white";
-                } else{
-                    ctx.fillStyle = "brown";
-                }
-                ctx.fillRect(x*size, y*size, size, size);
-                ctx.strokeRect(x*size, y*size, size, size);
-
-                ctx.fillStyle = "black";
-                ctx.fillText(`x:[${this.grid[y][x].tile.x}] y:[${this.grid[y][x].tile.y}]`, x*size + 2, y*size + 10);
+        //Draw tiles
+        const size = ctx.canvas.width/Math.sqrt(this.grid.length);
+        for(const tile of this.grid) {
+            if (!tile.solid) {
+                ctx.fillStyle = "white";
+            } else {
+                ctx.fillStyle = "brown";
             }
+            ctx.fillRect(tile.x * size, tile.y * size, size, size);
+            ctx.strokeRect(tile.x * size, tile.y * size, size, size);
+
+            ctx.fillStyle = "black";
+            ctx.fillText(`x:[${tile.x}] y:[${tile.y}]`, tile.x * size + 2, tile.y * size + 10);
         }
+        //Draw players
         for(const player of this.players){
             ctx.fillStyle = player.color;
-            ctx.fillRect(player.point.x, player.point.y, size, size);
+            ctx.fillRect(player.point.x * size, player.point.y * size, size, size);
         }
     }
 }

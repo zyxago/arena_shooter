@@ -6,7 +6,7 @@ public class PlayerBuilder {
     private int hp;
     private int maxHp;
     private int dmg;
-    private Color color;
+    private PlayerColor color;
     private int playerNr;
     private Point point;
 
@@ -73,11 +73,11 @@ public class PlayerBuilder {
         return this;
     }
 
-    public Color getColor() {
+    public PlayerColor getColor() {
         return color;
     }
 
-    public PlayerBuilder Color(Color color) {
+    public PlayerBuilder Color(PlayerColor color) {
         this.color = color;
         return this;
     }

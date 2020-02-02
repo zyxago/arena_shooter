@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.json.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author erikh
@@ -15,7 +16,7 @@ public class Game {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
 
-    private Tile[][] grid;
+    private Map<Point, Tile> grid;
     private List<Player> players;
     private List<Item> items;
     private List<Bullet> bullets;
@@ -30,11 +31,11 @@ public class Game {
         this.players = build.getPlayers();
     }
 
-    public Tile[][] getGrid() {
+    public Map<Point, Tile> getGrid() {
         return grid;
     }
 
-    public void setGrid(Tile[][] grid) {
+    public void setGrid(Map<Point, Tile> grid) {
         this.grid = grid;
     }
 
@@ -71,16 +72,9 @@ public class Game {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
 
         //Creates JsonArray of grid
-        JsonArrayBuilder gridRows = factory.createArrayBuilder();
-        for (int y = 0; y < getGrid().length; y++) {
-            JsonArrayBuilder jsonArrayBuilderTiles = factory.createArrayBuilder();
-
-            for (int x = 0; x < getGrid()[y].length; x++) {
-                jsonArrayBuilderTiles
-                        .add(factory.createObjectBuilder()
-                                .add("tile", factory.createObjectBuilder(getGrid()[y][x].toJson())));
-            }
-            gridRows.add(jsonArrayBuilderTiles.build());
+        JsonArrayBuilder gridArray = factory.createArrayBuilder();
+        for(Tile tile: getGrid().values()){
+            gridArray.add(factory.createObjectBuilder(tile.toJson()));
         }
 
         //Creates JsonArray of players
@@ -90,11 +84,15 @@ public class Game {
         }
 
         return factory.createObjectBuilder()
-                .add("grid", factory.createArrayBuilder(gridRows.build()))
+                .add("grid", factory.createArrayBuilder(gridArray.build()))
                 .add("players", factory.createArrayBuilder(jsonPlayers.build()))
                 .build();
     }
 
+    /**
+     * Json stringify this game object
+     * @return Returns a json string of this object
+     */
     public String jsonStringGame() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObject jsonMessage = factory.createObjectBuilder()

@@ -2,6 +2,7 @@ import {createLobbies} from "./logic/lobbies";
 import Player from "./entities/Player";
 import Canvas from "./entities/Canvas";
 import Game from "./entities/Game";
+import {moveAction} from "./logic/action";
 
 export default class Application {
     constructor() {
@@ -9,9 +10,9 @@ export default class Application {
         this.url = "ws://localhost:8080/arena_shooter/endpoint";
         this.ws = new WebSocket(this.url);
         this.users = [];
+        this.keyPressEnabled = true;
         this.ws.addEventListener("message", e => {
             const data = JSON.parse(e.data);
-            console.log(data);
             switch (data.type) {
                 case "newUser":
                     this.newUser();
@@ -27,6 +28,18 @@ export default class Application {
                     break;
             }
         });
+        this.initPlayerControlls();
+    }
+
+    initPlayerControlls() {
+        addEventListener("keydown", (e) => {
+            if (this.keyPressEnabled) {
+                this.keyPressEnabled = false;
+                this.send("move", moveAction(e))
+            }
+        });
+        addEventListener("keyup", () => this.keyPressEnabled = true);
+        //add event listener for attack
     }
 
     /**
@@ -50,10 +63,15 @@ export default class Application {
         this.send("join", id);
     }
 
-    startGame(){
-        this.send("start","");
+    startGame() {
+        this.send("start", "");
     }
 
+    /**
+     * Sends a message to the Websocket server
+     * @param type Type of message
+     * @param msg Message
+     */
     send(type, msg) {
         //msg to send:
         //Move player:  "move"
@@ -65,9 +83,15 @@ export default class Application {
         this.ws.send(`${type}:${msg}`);
     }
 
+    /**
+     * Creates a Game obj from json
+     * @param game Json to create obj from
+     */
     createGame(game) {
+        if (this.game == undefined) {
+            requestAnimationFrame(() => this.draw());
+        }
         this.game = new Game(game);
-        requestAnimationFrame(()=>this.draw());
     }
 
     newUser() {
@@ -78,25 +102,29 @@ export default class Application {
         this.send("name", name);
     }
 
+    /**
+     * Updates lobby lists and users online list
+     * @param users Current state of users
+     */
     updateUsers(users) {
         document.getElementById("users").value = "";
-        for(let i = 0; i < this.lobbyCount; i++){
+        for (let i = 0; i < this.lobbyCount; i++) {
             document.getElementById(`lobby:${i}`).value = "";
         }
-        for(const user of users){
-            if(!this.users.filter((oldUser)=>oldUser.id == user.id)){
+        for (const user of users) {
+            if (!this.users.filter((oldUser) => oldUser.id == user.id)) {
                 this.users.push(new Player(user));
             }
             const output = `${user.username}\n`;
             document.getElementById("users").value += output;
-            if(user.lobby){
+            if (user.lobby) {
                 document.getElementById(`lobby:${user.lobby}`).value += output;
             }
         }
     }
 
-    draw(){
+    draw() {
         this.game.draw(this.canvas.ctx);
-        requestAnimationFrame(()=>this.draw());
+        requestAnimationFrame(() => this.draw());
     }
 }

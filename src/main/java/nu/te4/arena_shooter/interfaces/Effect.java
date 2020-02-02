@@ -1,4 +1,4 @@
-package nu.te4.arena_shooter.entities.effects;
+package nu.te4.arena_shooter.interfaces;
 
 /**
  *

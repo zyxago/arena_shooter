@@ -3,6 +3,9 @@ package nu.te4.arena_shooter.entities;
 import nu.te4.arena_shooter.entities.Point;
 import nu.te4.arena_shooter.entities.tiles.Tile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GridFactory {
     /**
      *
@@ -12,15 +15,15 @@ public class GridFactory {
      * @param spawnTiles Amount of tiles being Spawn Tiles
      * @return Returns a 2d array of Tile objects
      */
-    public Tile[][] getGrid(int width, int height, float obstacleRate, int spawnTiles){
-        Tile[][] grid = new Tile[height][width];
+    public Map<Point, Tile> getGrid(int width, int height, float obstacleRate, int spawnTiles){
+        Map<Point, Tile> grid = new HashMap<>();
         for(int y = 0; y < height; y++){
             for(int x = 0; x < width; x++){
                 boolean solid = false;
                 if(Math.random() < obstacleRate){
                     solid = true;
                 }
-                grid[y][x] = new Tile(new Point(x, y), solid, null);//TODO implement spawnable tiles
+                grid.put(new Point(x, y),new Tile(new Point(x, y), solid, null));//TODO implement spawnable tiles
             }
         }
         return grid;

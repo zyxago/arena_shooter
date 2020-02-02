@@ -1,12 +1,14 @@
 package nu.te4.arena_shooter.entities;
 
+import nu.te4.arena_shooter.interfaces.Moveable;
+
 import java.awt.Color;
 
 /**
  *
  * @author erikh
  */
-public class Bullet extends Entity implements Moveable{
+public class Bullet extends Entity implements Moveable {
     private Player owner;
     private Color color;
 
@@ -32,8 +34,8 @@ public class Bullet extends Entity implements Moveable{
         this.color = color;
     }
 
-    public boolean move(Point newPos){
-        return false;
+    public void move(int dirX, int dirY){
+        setPoint(new Point(getPoint().getX()+dirX, getPoint().getY() + dirY));
     }
             
 }

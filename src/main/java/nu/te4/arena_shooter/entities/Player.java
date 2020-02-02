@@ -1,21 +1,21 @@
 package nu.te4.arena_shooter.entities;
 
+import nu.te4.arena_shooter.interfaces.Moveable;
+
 import javax.json.Json;
 import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import java.awt.Color;
-import java.util.List;
 
 /**
  *
  * @author erikh
  */
-public class Player extends Entity implements Moveable{
+public class Player extends Entity implements Moveable {
     private int hp;
     private int maxHp;
     private int dmg;
-    private Color color;
+    private PlayerColor color;
     private int playerNr;
 
     public Player(PlayerBuilder build){
@@ -51,11 +51,11 @@ public class Player extends Entity implements Moveable{
         this.dmg = dmg;
     }
 
-    public Color getColor() {
+    public PlayerColor getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(PlayerColor color) {
         this.color = color;
     }
 
@@ -67,8 +67,8 @@ public class Player extends Entity implements Moveable{
         this.playerNr = playerNr;
     }
 
-    public boolean move(Point newPos){
-        return false;
+    public void move(int dirX, int dirY){
+        setPoint(new Point(getPoint().getX()+dirX, getPoint().getY() + dirY));
     }
 
     public JsonObject toJson(){
@@ -77,7 +77,7 @@ public class Player extends Entity implements Moveable{
         return player.add("hp", getHp())
                 .add("maxHp", getMaxHp())
                 .add("dmg", getDmg())
-                .add("color", "rgb("+getColor().getRed()+','+getColor().getGreen()+','+getColor().getBlue()+')')
+                .add("color", color.toString())
                 .add("playerNr", getPlayerNr())
                 .add("point", factory.createObjectBuilder(getPoint().toJson()))
                 .build();

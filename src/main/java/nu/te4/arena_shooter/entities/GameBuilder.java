@@ -4,9 +4,10 @@ import nu.te4.arena_shooter.entities.tiles.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GameBuilder {
-    private Tile[][] grid;
+    private Map<Point, Tile> grid;
     private List<Player> players;
     private List<Item> items;
     private List<Bullet> bullets;
@@ -30,11 +31,11 @@ public class GameBuilder {
         return new Game(this);
     }
 
-    public Tile[][] getGrid() {
+    public Map<Point, Tile> getGrid() {
         return grid;
     }
 
-    public GameBuilder Grid(Tile[][] grid) {
+    public GameBuilder Grid(Map<Point, Tile> grid) {
         this.grid = grid;
         return this;
     }

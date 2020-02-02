@@ -1,6 +1,5 @@
 package nu.te4.arena_shooter.endpoint;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 import javax.websocket.OnClose;
@@ -9,11 +8,12 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-import nu.te4.arena_shooter.JsonMessenger;
+import nu.te4.arena_shooter.GameHandler;
 import nu.te4.arena_shooter.entities.*;
-import nu.te4.arena_shooter.entities.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static nu.te4.arena_shooter.JsonMessenger.getJsonMessenger;
 
 /**
  * @author erikh
@@ -22,12 +22,11 @@ import org.slf4j.LoggerFactory;
 public class WSEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WSEndpoint.class);
-    static Map<Integer, Game> GAMES = new HashMap<>();
+    static Map<Integer, GameHandler> GAMES = new HashMap<>();
     static Set<Session> SESSIONS = new HashSet<>();
 
     @OnMessage
     public void onMessage(String message, Session user) {
-        LOGGER.info("Message: " + message);
         String msgType = message.substring(0, message.indexOf(':'));
         message = message.substring(message.indexOf(':') + 1);
 
@@ -35,33 +34,32 @@ public class WSEndpoint {
             if (user.getUserProperties().get("username") == null && msgType.equals("name")) {
                 user.getUserProperties().put("username", message);
                 user.getUserProperties().put("lobby", "0");
-                broadcastMessege(JsonMessenger.getJsonMessenger().updateUsersMessage(SESSIONS));
+                broadcastMessege(getJsonMessenger().updateUsersMessage(SESSIONS));
 
             } else if (msgType.equals("join")) {
+                LOGGER.info("Join command initiated by " + user.getUserProperties().get("username"));
                 user.getUserProperties().put("lobby", message);
-                broadcastMessege(JsonMessenger.getJsonMessenger().updateUsersMessage(SESSIONS));
+                broadcastMessege(getJsonMessenger().updateUsersMessage(SESSIONS));
 
-            } else if (msgType.equals("start")) {
+            } else {
                 int lobby = Integer.parseInt((String) user.getUserProperties().get("lobby"));
-                List<Player> players = new ArrayList<>();
-                for (Session session : SESSIONS) {
-                    if ((session.getUserProperties().get("lobby")).equals(Integer.toString(lobby))) {
-                        players.add(new PlayerBuilder()
-                                .Point(new Point(0,0))
-                                .Color(Color.blue)
-                                .Dmg(1)
-                                .Hp(3)
-                                .MaxHp(3)
-                                .PlayerNr(Integer.parseInt((String) session.getUserProperties().get("playerNr")))
-                                .build());
-                        LOGGER.info("Player added to list!");
-                    }
+                int playerNr = Integer.parseInt((String) user.getUserProperties().get("playerNr"));
+
+                switch (msgType) {
+                    case "start":
+                        LOGGER.info("Start command initiated by " + user.getUserProperties().get("username"));
+                        GAMES.put(lobby, creatGame(lobby));
+                        break;
+                    case "move":
+                        LOGGER.info("Move command initiated by " + user.getUserProperties().get("username"));
+                        int dirX = Integer.parseInt(message.substring(0, message.indexOf(":")));
+                        int dirY = Integer.parseInt(message.substring(message.indexOf(":") + 1));
+                        GAMES.get(lobby).move(playerNr, dirX, dirY);
+                        break;
+                    case "attack":
+                        break;
                 }
-                GAMES.put(lobby, new GameBuilder()
-                        .Grid(new GridFactory().getGrid(16, 16, .2f, 0))
-                        .Players(players)
-                        .build());
-                JsonMessenger.getJsonMessenger().gameStateMessage(SESSIONS, GAMES.get(lobby));
+                getJsonMessenger().gameStateMessage(SESSIONS, GAMES.get(lobby).getGame());
             }
         } catch (Exception e) {
             LOGGER.error("Error in WSEndpoint.onMessage" + e.getMessage());
@@ -74,8 +72,8 @@ public class WSEndpoint {
         SESSIONS.add(user);
         user.getUserProperties().put("playerNr", Integer.toString(SESSIONS.size()));//TODO fixa bättre lösning, om någon avbryter sin anslutning så kan nästa få samma nummer som någon annan
         try {
-            user.getBasicRemote().sendText(JsonMessenger.getJsonMessenger().newUserMessage());
-            user.getBasicRemote().sendText(JsonMessenger.getJsonMessenger().lobbyMessage());
+            user.getBasicRemote().sendText(getJsonMessenger().newUserMessage());
+            user.getBasicRemote().sendText(getJsonMessenger().lobbyMessage());
         } catch (Exception e) {
             LOGGER.error("Error in WSEndpoint.open: " + e.getMessage());
         }
@@ -87,6 +85,10 @@ public class WSEndpoint {
         SESSIONS.remove(user);
     }
 
+    /**
+     *
+     * @param msg
+     */
     public void broadcastMessege(String msg) {
         try {
             for (Session session : SESSIONS) {
@@ -96,6 +98,26 @@ public class WSEndpoint {
             LOGGER.error("Error in WSEndpoint.broadcastMessage: " + e.getMessage());
         }
 
+    }
+
+    /**
+     *
+     * @param lobby
+     * @return
+     */
+    public GameHandler creatGame(int lobby) {
+        List<Player> players = new ArrayList<>();
+        for (Session session : SESSIONS) {
+            int playerNr = Integer.parseInt((String) session.getUserProperties().get("playerNr"));
+            if ((session.getUserProperties().get("lobby")).equals(Integer.toString(lobby))) {
+                players.add(new PlayerFactory().getStandardPlayer(playerNr, new PlayerColor(0, 0, 255)));
+                LOGGER.info("Player added to list!");
+            }
+        }
+        return new GameHandler(new GameBuilder()
+                .Grid(new GridFactory().getGrid(16, 16, .2f, 0))
+                .Players(players)
+                .build());
     }
 
 }
