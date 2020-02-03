@@ -1,7 +1,7 @@
 package nu.te4.arena_shooter.entities;
 
+import nu.te4.arena_shooter.entities.player.Player;
 import nu.te4.arena_shooter.entities.tiles.Tile;
-import nu.te4.arena_shooter.entities.tiles.spawns.SpawnItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,24 +73,32 @@ public class Game {
 
         //Creates JsonArray of grid
         JsonArrayBuilder gridArray = factory.createArrayBuilder();
-        for(Tile tile: getGrid().values()){
+        for (Tile tile : getGrid().values()) {
             gridArray.add(factory.createObjectBuilder(tile.toJson()));
         }
 
         //Creates JsonArray of players
         JsonArrayBuilder jsonPlayers = factory.createArrayBuilder();
-        for (int i = 0; i < getPlayers().size(); i++) {
-            jsonPlayers.add(factory.createObjectBuilder(getPlayers().get(i).toJson()));
+        for (Player player : getPlayers()) {
+            jsonPlayers.add(factory.createObjectBuilder(player.toJson()));
+        }
+
+        //Creates JsonArray of bullets
+        JsonArrayBuilder jsonBullets = factory.createArrayBuilder();
+        for (Bullet bullet : getBullets()) {
+            jsonBullets.add(factory.createObjectBuilder(bullet.toJson()));
         }
 
         return factory.createObjectBuilder()
                 .add("grid", factory.createArrayBuilder(gridArray.build()))
                 .add("players", factory.createArrayBuilder(jsonPlayers.build()))
+                .add("bullets", factory.createArrayBuilder(jsonBullets.build()))
                 .build();
     }
 
     /**
      * Json stringify this game object
+     *
      * @return Returns a json string of this object
      */
     public String jsonStringGame() {

@@ -1,4 +1,4 @@
-package nu.te4.arena_shooter.entities;
+package nu.te4.arena_shooter.entities.player;
 
 public class PlayerColor {
     private int r;

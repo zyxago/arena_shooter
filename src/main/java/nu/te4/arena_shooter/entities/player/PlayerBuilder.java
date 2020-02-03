@@ -1,6 +1,6 @@
-package nu.te4.arena_shooter.entities;
+package nu.te4.arena_shooter.entities.player;
 
-import java.awt.*;
+import nu.te4.arena_shooter.entities.Point;
 
 public class PlayerBuilder {
     private int hp;
@@ -8,7 +8,7 @@ public class PlayerBuilder {
     private int dmg;
     private PlayerColor color;
     private int playerNr;
-    private Point point;
+    private nu.te4.arena_shooter.entities.Point point;
 
 
     public PlayerBuilder() {
@@ -32,12 +32,12 @@ public class PlayerBuilder {
             throw new IllegalStateException("Player number must be set!");
         }
         if(point == null){
-            point = new Point(0,0);
+            point = new nu.te4.arena_shooter.entities.Point(0,0);
         }
         return new Player(this);
     }
 
-    public Point getPoint() {
+    public nu.te4.arena_shooter.entities.Point getPoint() {
         return point;
     }
 

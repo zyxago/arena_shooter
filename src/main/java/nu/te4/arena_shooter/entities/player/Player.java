@@ -1,5 +1,7 @@
-package nu.te4.arena_shooter.entities;
+package nu.te4.arena_shooter.entities.player;
 
+import nu.te4.arena_shooter.entities.Entity;
+import nu.te4.arena_shooter.entities.Point;
 import nu.te4.arena_shooter.interfaces.Moveable;
 
 import javax.json.Json;
@@ -67,8 +69,8 @@ public class Player extends Entity implements Moveable {
         this.playerNr = playerNr;
     }
 
-    public void move(int dirX, int dirY){
-        setPoint(new Point(getPoint().getX()+dirX, getPoint().getY() + dirY));
+    public void move(int... dir){
+        setPoint(new Point(getPoint().getX()+dir[0], getPoint().getY() + dir[1]));
     }
 
     public JsonObject toJson(){

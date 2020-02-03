@@ -2,6 +2,9 @@ package nu.te4.arena_shooter.endpoint;
 
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -10,6 +13,9 @@ import javax.websocket.server.ServerEndpoint;
 
 import nu.te4.arena_shooter.GameHandler;
 import nu.te4.arena_shooter.entities.*;
+import nu.te4.arena_shooter.entities.player.Player;
+import nu.te4.arena_shooter.entities.player.PlayerColor;
+import nu.te4.arena_shooter.entities.player.PlayerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +36,7 @@ public class WSEndpoint {
         String msgType = message.substring(0, message.indexOf(':'));
         message = message.substring(message.indexOf(':') + 1);
 
-        try {//TODO bryt upp i funktioner om det går
+        try {
             if (user.getUserProperties().get("username") == null && msgType.equals("name")) {
                 user.getUserProperties().put("username", message);
                 user.getUserProperties().put("lobby", "0");
@@ -43,21 +49,25 @@ public class WSEndpoint {
 
             } else {
                 int lobby = Integer.parseInt((String) user.getUserProperties().get("lobby"));
-                int playerNr = Integer.parseInt((String) user.getUserProperties().get("playerNr"));
 
-                switch (msgType) {
-                    case "start":
-                        LOGGER.info("Start command initiated by " + user.getUserProperties().get("username"));
-                        GAMES.put(lobby, creatGame(lobby));
-                        break;
-                    case "move":
-                        LOGGER.info("Move command initiated by " + user.getUserProperties().get("username"));
-                        int dirX = Integer.parseInt(message.substring(0, message.indexOf(":")));
-                        int dirY = Integer.parseInt(message.substring(message.indexOf(":") + 1));
-                        GAMES.get(lobby).move(playerNr, dirX, dirY);
-                        break;
-                    case "attack":
-                        break;
+                if (msgType.equals("start")) {
+                    LOGGER.info("Start command initiated by " + user.getUserProperties().get("username"));
+                    GAMES.put(lobby, creatGame(lobby));
+                } else {
+                    if(!message.equals("")){
+                        int playerNr = Integer.parseInt((String) user.getUserProperties().get("playerNr"));
+                        int dirX = Integer.parseInt(message.substring(0, message.indexOf(",")));
+                        int dirY = Integer.parseInt(message.substring(message.indexOf(",") + 1));
+                        LOGGER.info("X:" + dirX + " Y:" + dirY);
+                        if (msgType.equals("move")) {
+                            LOGGER.info("Move command initiated by " + user.getUserProperties().get("username"));
+                            GAMES.get(lobby).playerMove(playerNr, dirX, dirY);
+
+                        } else if (msgType.equals("attack")) {
+                            LOGGER.info("Attack command initiated by " + user.getUserProperties().get("username"));
+                            GAMES.get(lobby).playerAttack(playerNr, dirX, dirY);
+                        }
+                    }
                 }
                 getJsonMessenger().gameStateMessage(SESSIONS, GAMES.get(lobby).getGame());
             }
@@ -71,13 +81,13 @@ public class WSEndpoint {
         LOGGER.debug("New Session created");
         int playerNr = 0;
         int heighestNr = 0;
-        for(Session session:SESSIONS){
-            int currentPlayerNr = Integer.parseInt((String)session.getUserProperties().get("playerNr"));
-            if(currentPlayerNr > heighestNr){
+        for (Session session : SESSIONS) {
+            int currentPlayerNr = Integer.parseInt((String) session.getUserProperties().get("playerNr"));
+            if (currentPlayerNr > heighestNr) {
                 heighestNr = currentPlayerNr;
             }
         }
-        playerNr = heighestNr+1;
+        playerNr = heighestNr + 1;
         SESSIONS.add(user);
         user.getUserProperties().put("playerNr", Integer.toString(playerNr));
         try {
@@ -95,7 +105,6 @@ public class WSEndpoint {
     }
 
     /**
-     *
      * @param msg
      */
     public void broadcastMessege(String msg) {
@@ -110,7 +119,6 @@ public class WSEndpoint {
     }
 
     /**
-     *
      * @param lobby
      * @return
      */
@@ -124,10 +132,21 @@ public class WSEndpoint {
                 LOGGER.info("Player added to list!");
             }
         }
-        return new GameHandler(new GameBuilder()
+
+        GameHandler gameHandler = new GameHandler(new GameBuilder()
                 .Grid(new GridFactory().getGrid(16, 16, .2f, 5))
                 .Players(players)
                 .build());
+
+        //Adds scheduler to run update() every second and send current game state after update
+        Runnable update = () -> {
+            gameHandler.update();
+            getJsonMessenger().gameStateMessage(SESSIONS, GAMES.get(lobby).getGame());
+        };
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        executor.scheduleAtFixedRate(update, 0, 1, TimeUnit.SECONDS);
+
+        return gameHandler;
     }
 
 }

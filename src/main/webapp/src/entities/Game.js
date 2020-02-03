@@ -1,11 +1,12 @@
 import Player from "./Player";
 import Tile from "./Tile";
+import Bullet from "./Bullet";
 
 export default class Game {
     constructor({grid, players, bullets, items}) {
         this.grid = grid.map((tile) => new Tile(tile));
         this.players = players.map((player) => new Player(player));
-        this.bullets = bullets;
+        this.bullets = bullets.map((bullet) => new Bullet(bullet));
         this.items = items
     }
 
@@ -35,6 +36,11 @@ export default class Game {
         //Draw players
         for (const player of this.players) {
             player.draw(ctx, size);
+        }
+
+        //Draw bullets
+        for(const bullet of this.bullets){
+            bullet.draw(ctx, size);
         }
     }
 }

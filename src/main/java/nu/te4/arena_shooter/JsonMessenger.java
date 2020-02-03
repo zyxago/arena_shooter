@@ -1,7 +1,7 @@
 package nu.te4.arena_shooter;
 
 import nu.te4.arena_shooter.entities.Game;
-import nu.te4.arena_shooter.entities.Player;
+import nu.te4.arena_shooter.entities.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
