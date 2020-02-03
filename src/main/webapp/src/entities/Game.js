@@ -1,7 +1,10 @@
-export default class Game{
+import Player from "./Player";
+import Tile from "./Tile";
+
+export default class Game {
     constructor({grid, players, bullets, items}) {
-        this.grid = grid;
-        this.players = players;
+        this.grid = grid.map((tile) => new Tile(tile));
+        this.players = players.map((player) => new Player(player));
         this.bullets = bullets;
         this.items = items
     }
@@ -10,25 +13,28 @@ export default class Game{
      * Draws current game state to canvas
      * @param ctx Canvas context
      */
-    draw(ctx){
+    draw(ctx) {
+        const size = ctx.canvas.width / Math.sqrt(this.grid.length);
         //Draw tiles
-        const size = ctx.canvas.width/Math.sqrt(this.grid.length);
-        for(const tile of this.grid) {
+        for (const tile of this.grid) {
             if (!tile.solid) {
-                ctx.fillStyle = "white";
+                if (tile.spawns) {
+                    ctx.fillStyle = "green"
+                } else {
+                    ctx.fillStyle = "white";
+                }
             } else {
                 ctx.fillStyle = "brown";
             }
-            ctx.fillRect(tile.x * size, tile.y * size, size, size);
-            ctx.strokeRect(tile.x * size, tile.y * size, size, size);
+            ctx.fillRect(tile.point.x * size, tile.point.y * size, size, size);
+            ctx.strokeRect(tile.point.x * size, tile.point.y * size, size, size);
 
             ctx.fillStyle = "black";
-            ctx.fillText(`x:[${tile.x}] y:[${tile.y}]`, tile.x * size + 2, tile.y * size + 10);
+            ctx.fillText(`x:[${tile.point.x}] y:[${tile.point.y}]`, tile.point.x * size + 2, tile.point.y * size + 10);
         }
         //Draw players
-        for(const player of this.players){
-            ctx.fillStyle = player.color;
-            ctx.fillRect(player.point.x * size, player.point.y * size, size, size);
+        for (const player of this.players) {
+            player.draw(ctx, size);
         }
     }
 }

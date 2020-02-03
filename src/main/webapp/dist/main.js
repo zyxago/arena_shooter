@@ -118,7 +118,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return Game; });\nclass Game{\r\n    constructor({grid, players, bullets, items}) {\r\n        this.grid = grid;\r\n        this.players = players;\r\n        this.bullets = bullets;\r\n        this.items = items\r\n    }\r\n\r\n    /**\r\n     * Draws current game state to canvas\r\n     * @param ctx Canvas context\r\n     */\r\n    draw(ctx){\r\n        //Draw tiles\r\n        const size = ctx.canvas.width/Math.sqrt(this.grid.length);\r\n        for(const tile of this.grid) {\r\n            if (!tile.solid) {\r\n                ctx.fillStyle = \"white\";\r\n            } else {\r\n                ctx.fillStyle = \"brown\";\r\n            }\r\n            ctx.fillRect(tile.x * size, tile.y * size, size, size);\r\n            ctx.strokeRect(tile.x * size, tile.y * size, size, size);\r\n\r\n            ctx.fillStyle = \"black\";\r\n            ctx.fillText(`x:[${tile.x}] y:[${tile.y}]`, tile.x * size + 2, tile.y * size + 10);\r\n        }\r\n        //Draw players\r\n        for(const player of this.players){\r\n            ctx.fillStyle = player.color;\r\n            ctx.fillRect(player.point.x * size, player.point.y * size, size, size);\r\n        }\r\n    }\r\n}\n\n//# sourceURL=webpack:///./src/entities/Game.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return Game; });\n/* harmony import */ var _Player__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Player */ \"./src/entities/Player.js\");\n/* harmony import */ var _Tile__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Tile */ \"./src/entities/Tile.js\");\n\r\n\r\n\r\nclass Game {\r\n    constructor({grid, players, bullets, items}) {\r\n        this.grid = grid.map((tile) => new _Tile__WEBPACK_IMPORTED_MODULE_1__[\"default\"](tile));\r\n        this.players = players.map((player) => new _Player__WEBPACK_IMPORTED_MODULE_0__[\"default\"](player));\r\n        this.bullets = bullets;\r\n        this.items = items\r\n    }\r\n\r\n    /**\r\n     * Draws current game state to canvas\r\n     * @param ctx Canvas context\r\n     */\r\n    draw(ctx) {\r\n        const size = ctx.canvas.width / Math.sqrt(this.grid.length);\r\n        //Draw tiles\r\n        for (const tile of this.grid) {\r\n            if (!tile.solid) {\r\n                if (tile.spawns) {\r\n                    ctx.fillStyle = \"green\"\r\n                } else {\r\n                    ctx.fillStyle = \"white\";\r\n                }\r\n            } else {\r\n                ctx.fillStyle = \"brown\";\r\n            }\r\n            ctx.fillRect(tile.point.x * size, tile.point.y * size, size, size);\r\n            ctx.strokeRect(tile.point.x * size, tile.point.y * size, size, size);\r\n\r\n            ctx.fillStyle = \"black\";\r\n            ctx.fillText(`x:[${tile.point.x}] y:[${tile.point.y}]`, tile.point.x * size + 2, tile.point.y * size + 10);\r\n        }\r\n        //Draw players\r\n        for (const player of this.players) {\r\n            player.draw(ctx, size);\r\n        }\r\n    }\r\n}\n\n//# sourceURL=webpack:///./src/entities/Game.js?");
 
 /***/ }),
 
@@ -130,7 +130,31 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return Player; });\nclass Player{\r\n    //Ta bort kanske?\r\n    constructor({name, color, lobby}) {\r\n        this.name = name;\r\n        this.color = color;\r\n        this.lobby = lobby;\r\n    }\r\n}\n\n//# sourceURL=webpack:///./src/entities/Player.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return Player; });\nclass Player{\r\n    constructor({name, color, lobby, hp, maxHp, point}) {\r\n        this.name = name;\r\n        this.color = color;\r\n        this.lobby = lobby;\r\n        this.hp = hp;\r\n        this.maxHp = maxHp;\r\n        this.point = point;\r\n    }\r\n\r\n    draw(ctx, size){\r\n        const offset = size/4;\r\n        ctx.fillStyle = this.color;\r\n        ctx.fillRect(this.point.x * size + offset/2, this.point.y * size + offset/2, size - offset, size - offset);\r\n    }\r\n}\n\n//# sourceURL=webpack:///./src/entities/Player.js?");
+
+/***/ }),
+
+/***/ "./src/entities/Point.js":
+/*!*******************************!*\
+  !*** ./src/entities/Point.js ***!
+  \*******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return Point; });\nclass Point{\r\n    constructor({x, y}) {\r\n        this.x = x;\r\n        this.y = y;\r\n    }\r\n}\n\n//# sourceURL=webpack:///./src/entities/Point.js?");
+
+/***/ }),
+
+/***/ "./src/entities/Tile.js":
+/*!******************************!*\
+  !*** ./src/entities/Tile.js ***!
+  \******************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"default\", function() { return Tile; });\n/* harmony import */ var _Point__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Point */ \"./src/entities/Point.js\");\n\r\n\r\nclass Tile{\r\n    constructor({point, solid, spawns}) {\r\n        this.point = new _Point__WEBPACK_IMPORTED_MODULE_0__[\"default\"](point);\r\n        this.solid = solid;\r\n        this.spawns = spawns;\r\n    }\r\n}\n\n//# sourceURL=webpack:///./src/entities/Tile.js?");
 
 /***/ }),
 

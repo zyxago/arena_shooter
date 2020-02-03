@@ -5,13 +5,13 @@
  */
 package nu.te4.arena_shooter.entities.tiles.spawns;
 
-import nu.te4.arena_shooter.interfaces.Spawer;
+import nu.te4.arena_shooter.interfaces.Spawner;
 
 /**
  *
  * @author erikh
  */
-public class SpawnItem implements Spawer{
+public class SpawnItem implements Spawner {
 
     @Override
     public void spawn() {

@@ -1,6 +1,6 @@
 package nu.te4.arena_shooter.entities.tiles;
 
-import nu.te4.arena_shooter.interfaces.Spawer;
+import nu.te4.arena_shooter.interfaces.Spawner;
 import nu.te4.arena_shooter.entities.Entity;
 import nu.te4.arena_shooter.entities.Point;
 import org.slf4j.Logger;
@@ -19,9 +19,9 @@ public class Tile extends Entity{
     private static final Logger LOGGER = LoggerFactory.getLogger(Tile.class);
 
     boolean solid;
-    Spawer spawnable;
+    Spawner spawnable;
 
-    public Tile(Point point, boolean solid, Spawer spawnable) {
+    public Tile(Point point, boolean solid, Spawner spawnable) {
         super(point);
         this.solid = solid;
         this.spawnable = spawnable;
@@ -38,21 +38,25 @@ public class Tile extends Entity{
         this.solid = solid;
     }
 
-    public Spawer getSpawnable() {
+    public Spawner getSpawnable() {
         return spawnable;
     }
 
-    public void setSpawnable(Spawer spawnable) {
+    public void setSpawnable(Spawner spawnable) {
         this.spawnable = spawnable;
     }
 
     public JsonObject toJson(){
         LOGGER.debug("To json called");
         JsonObjectBuilder tileBuilder = Json.createObjectBuilder();
-        return tileBuilder
+        tileBuilder
                 .add("solid", solid)
-                .add("x", getPoint().getX())
-                .add("y", getPoint().getY())
-                .build();
+                .add("point", getPoint().toJson());
+        if(spawnable != null){
+            tileBuilder.add("spawns", true);
+        } else{
+            tileBuilder.add("spawns", false);
+        }
+        return tileBuilder.build();
     }
 }

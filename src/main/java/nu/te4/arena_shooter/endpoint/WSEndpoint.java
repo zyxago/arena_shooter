@@ -69,8 +69,17 @@ public class WSEndpoint {
     @OnOpen
     public void open(Session user) {
         LOGGER.debug("New Session created");
+        int playerNr = 0;
+        int heighestNr = 0;
+        for(Session session:SESSIONS){
+            int currentPlayerNr = Integer.parseInt((String)session.getUserProperties().get("playerNr"));
+            if(currentPlayerNr > heighestNr){
+                heighestNr = currentPlayerNr;
+            }
+        }
+        playerNr = heighestNr+1;
         SESSIONS.add(user);
-        user.getUserProperties().put("playerNr", Integer.toString(SESSIONS.size()));//TODO fixa bättre lösning, om någon avbryter sin anslutning så kan nästa få samma nummer som någon annan
+        user.getUserProperties().put("playerNr", Integer.toString(playerNr));
         try {
             user.getBasicRemote().sendText(getJsonMessenger().newUserMessage());
             user.getBasicRemote().sendText(getJsonMessenger().lobbyMessage());
@@ -106,16 +115,17 @@ public class WSEndpoint {
      * @return
      */
     public GameHandler creatGame(int lobby) {
+        Random r = new Random();
         List<Player> players = new ArrayList<>();
         for (Session session : SESSIONS) {
             int playerNr = Integer.parseInt((String) session.getUserProperties().get("playerNr"));
             if ((session.getUserProperties().get("lobby")).equals(Integer.toString(lobby))) {
-                players.add(new PlayerFactory().getStandardPlayer(playerNr, new PlayerColor(0, 0, 255)));
+                players.add(new PlayerFactory().getStandardPlayer(playerNr, new PlayerColor(r.nextInt(255), r.nextInt(255), r.nextInt(255))));
                 LOGGER.info("Player added to list!");
             }
         }
         return new GameHandler(new GameBuilder()
-                .Grid(new GridFactory().getGrid(16, 16, .2f, 0))
+                .Grid(new GridFactory().getGrid(16, 16, .2f, 5))
                 .Players(players)
                 .build());
     }
