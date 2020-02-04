@@ -1,5 +1,6 @@
 package nu.te4.arena_shooter.entities.player;
 
+import nu.te4.arena_shooter.SessionHandler;
 import nu.te4.arena_shooter.entities.Entity;
 import nu.te4.arena_shooter.entities.Point;
 import nu.te4.arena_shooter.interfaces.Moveable;
@@ -19,6 +20,7 @@ public class Player extends Entity implements Moveable {
     private int dmg;
     private PlayerColor color;
     private int playerNr;
+    private boolean dead;
 
     public Player(PlayerBuilder build){
         super(build.getPoint());
@@ -27,6 +29,14 @@ public class Player extends Entity implements Moveable {
         dmg = build.getDmg();
         color = build.getColor();
         playerNr = build.getPlayerNr();
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
 
     public int getHp() {

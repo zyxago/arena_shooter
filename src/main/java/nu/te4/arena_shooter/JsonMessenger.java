@@ -23,34 +23,31 @@ public class JsonMessenger {
 
     /**
      *
-     * @param SESSIONS
      * @param game
      */
-    public void gameStateMessage(Set<Session> SESSIONS, Game game) {
+    public void gameStateMessage(Game game) {
         try {
-            for (Session session : SESSIONS) {
+            for (Session session : SessionHandler.SESSIONS) {
                 for(Player player: game.getPlayers()){
                     if(Integer.toString(player.getPlayerNr()).equals(session.getUserProperties().get("playerNr"))){
-                        session.getBasicRemote().sendText(game.jsonStringGame());
+                        session.getBasicRemote().sendText(game.jsonStringState());
                     }
                 }
             }
         } catch (Exception e) {
             LOGGER.error("Error in JsonMessenger.sendGameState: " + e.getMessage());
         }
-
     }
 
     /**
      *
-     * @param SESSIONS
      * @return
      */
-    public String updateUsersMessage(Set<Session> SESSIONS) {
+    public String updateUsersMessage() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObject jsonMessage = Json.createObjectBuilder()
                 .add("type", "updateUsers")
-                .add("users", factory.createArrayBuilder(usersJson(SESSIONS)))
+                .add("users", factory.createArrayBuilder(usersJson()))
                 .build();
         return jsonMessage.toString();
     }
@@ -69,13 +66,12 @@ public class JsonMessenger {
 
     /**
      *
-     * @param SESSIONS
      * @return
      */
-    private JsonArray usersJson(Set<Session> SESSIONS) {
+    private JsonArray usersJson() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonArrayBuilder jsonUser = factory.createArrayBuilder();
-        for (Session user : SESSIONS) {
+        for (Session user : SessionHandler.SESSIONS) {
             jsonUser.add(factory.createObjectBuilder()
                     .add("username", (String) user.getUserProperties().get("username"))
                     .add("lobby", (String) user.getUserProperties().get("lobby")));
@@ -92,5 +88,33 @@ public class JsonMessenger {
                 .add("type", "newUser")
                 .build();
         return jsonMessage.toString();
+    }
+
+    public String gameWon(){
+        JsonObject jsonMessage = Json.createObjectBuilder()
+                .add("type", "won")
+                .build();
+        return jsonMessage.toString();
+    }
+
+    public String gameLost(){
+        JsonObject jsonMessage = Json.createObjectBuilder()
+                .add("type", "lost")
+                .build();
+        return jsonMessage.toString();
+    }
+
+    public void fullGameInfo(Game game){
+        try {
+            for (Session session : SessionHandler.SESSIONS) {
+                for(Player player: game.getPlayers()){
+                    if(Integer.toString(player.getPlayerNr()).equals(session.getUserProperties().get("playerNr"))){
+                        session.getBasicRemote().sendText(game.jsonStringFullGame());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error in JsonMessenger.sendGameState: " + e.getMessage());
+        }
     }
 }

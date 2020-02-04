@@ -5,9 +5,13 @@ import nu.te4.arena_shooter.entities.player.Player;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.websocket.Session;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class GameHandler {
     private Game game;
-    private Runnable update;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameHandler.class);
 
@@ -32,9 +36,7 @@ public class GameHandler {
         }
     }
 
-    //TODO skicka bara en skott lista istället för hela gamet
     public void update(){
-        LOGGER.info("Update was called!");
         for(Bullet bullet : getGame().getBullets()){
             if(validateMove(bullet, bullet.getDirX(), bullet.getDirY())){
                 bullet.move();
@@ -43,7 +45,12 @@ public class GameHandler {
                 bullet.setDead(true);
             }
         }
+        getGame().getPlayers().removeIf(Player::isDead);
         getGame().getBullets().removeIf(Bullet::isDead);
+
+        if(getGame().getPlayers().size() <= 0){
+            getGame().setFinished(true);
+        }
     }
 
     public void checkPlayerBulletCollision(){
@@ -55,8 +62,28 @@ public class GameHandler {
                 }
             }
         }
-        getGame().getBullets().removeIf(Bullet::isDead);
+        for(Player player : getGame().getPlayers()){
+            if(player.getHp() <= 0){
+                player.setDead(true);
+            }
+        }
+        for(Player player : getGame().getPlayers()){
+            if(player.isDead()) {
+                for(Session session : SessionHandler.SESSIONS){
+                    if(Integer.parseInt((String)session.getUserProperties().get("playerNr")) == player.getPlayerNr()){
+                        try {
+                            session.getBasicRemote().sendText(JsonMessenger.getJsonMessenger().gameLost());
+                        } catch (Exception e){
+                            System.out.println("Error in GameHandler.checkPlayerBulletCollision: " + e.getMessage());
+                        }
+
+                    }
+                }
+            }
+        }
+
     }
+
 
     /**
      *
@@ -65,9 +92,18 @@ public class GameHandler {
      * @param dirY
      */
     public void playerAttack(int playerNr, int dirX, int dirY) {
+        List<Point> invalidPoints = new ArrayList();
+        for(Point point : getGame().getGrid().keySet()){
+            if(game.getGrid().get(point).isSolid()){
+                invalidPoints.add((point));
+            }
+        }
         for (Player player: getGame().getPlayers()){
             if(player.getPlayerNr() == playerNr){
-                getGame().getBullets().add(new Bullet(player.getPoint(), player, player.getColor(), dirX, dirY));
+                Point point = new Point(player.getPoint().getX()+dirX, player.getPoint().getY()+dirY);
+                if(!invalidPoints.contains(point)){
+                    getGame().getBullets().add(new Bullet(point, player, player.getColor(), dirX, dirY));
+                }
             }
         }
     }
@@ -94,5 +130,18 @@ public class GameHandler {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public void randomizePlayerPos() {
+        Random r = new Random();
+        List<Point> points = new ArrayList();
+        for(Point point : getGame().getGrid().keySet()){
+            if(!getGame().getGrid().get(point).isSolid()){
+                points.add(point);
+            }
+        }
+        for(Player player : getGame().getPlayers()){
+            player.setPoint(points.get(r.nextInt(points.size())));
+        }
     }
 }

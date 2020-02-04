@@ -1,6 +1,7 @@
 import Canvas from "./entities/Canvas";
 import {attackAction, moveAction} from "./logic/actions";
 import {createGame, initLobbies, newUser, send, updateUsers} from "./logic/wsHandler";
+import Game from "./entities/Game";
 
 export default class Application {
     constructor() {
@@ -9,26 +10,7 @@ export default class Application {
         this.canvas = new Canvas(document.getElementById("canvas"));
         this.moveKeyEnabled = true;
         this.attackKeyEnabled = true;
-        this.addListeners();
-    }
-
-    addListeners() {
-        addEventListener("keydown", (e) => {
-            if (this.moveKeyEnabled) {
-                this.moveKeyEnabled = false;
-                send(this.ws, "move", moveAction(e))
-            }
-        });
-        addEventListener("keyup", () => this.moveKeyEnabled = true);
-
-        addEventListener("keydown", (e) => {
-            if (this.attackKeyEnabled) {
-                this.attackKeyEnabled = false;
-                send(this.ws, "attack", attackAction(e))
-            }
-        });
-        addEventListener("keyup", () => this.attackKeyEnabled = true);
-
+        this.addGameListeners();
         this.ws.addEventListener("message", e => {
             const data = JSON.parse(e.data);
             console.log(data);
@@ -37,7 +19,7 @@ export default class Application {
                     newUser(this.ws);
                     break;
                 case "game":
-                    this.game = createGame(data.game);
+                    this.game = new Game(data.game);
                     this.game.draw(this.canvas.ctx);
                     break;
                 case "updateUsers":
@@ -47,7 +29,60 @@ export default class Application {
                     this.lobbyCount = data.lobbies;
                     initLobbies(this.ws, data.lobbies);
                     break;
+                case "win":
+                    this.destroyGame();
+                    alert("VICTORY!");
+                    break;
+                case "lost":
+                    this.destroyGame();
+                    alert("DEFEAT!");
+                    break;
+                case "gameState":
+                    this.game.update(data.players, data.bullets);
+                    this.game.draw(this.canvas.ctx);
             }
         });
+    }
+
+    addGameListeners() {
+        addEventListener("keydown", this.moveListener.bind(this));
+        addEventListener("keyup", this.enableMoveListener.bind(this));
+
+        addEventListener("keydown", this.attackListener.bind(this));
+        addEventListener("keyup", this.enableAttackListener.bind(this));
+    }
+
+    moveListener(e){
+        if (this.moveKeyEnabled) {
+            this.moveKeyEnabled = false;
+            send(this.ws, "move", moveAction(e))
+        }
+    }
+    enableMoveListener(){
+        this.moveKeyEnabled = true
+    }
+
+    attackListener(e){
+        if (this.attackKeyEnabled) {
+            this.attackKeyEnabled = false;
+            send(this.ws, "attack", attackAction(e))
+        }
+    }
+    enableAttackListener(){
+        this.attackKeyEnabled = true
+    }
+
+
+    removeGameListeners(){
+        removeEventListener("keydown", this.moveListener);
+        removeEventListener("keydown", this.attackListener);
+        removeEventListener("keyup", this.enableMoveListener);
+        removeEventListener("keyup", this.enableAttackListener);
+    }
+
+    destroyGame(){
+        this.removeGameListeners();
+        this.game = undefined;
+        this.canvas.ctx.clearRect(0,0,this.canvas.canvas.width,this.canvas.canvas.height);
     }
 }

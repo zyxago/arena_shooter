@@ -1,5 +1,4 @@
 import {createLobbies} from "./lobbies";
-import Game from "../entities/Game";
 
 /**
  *
@@ -12,15 +11,6 @@ export function initLobbies(ws, lobbyCount) {
         document.getElementById(`join:${i}`).addEventListener("click", () => joinLobby(ws, i));
         document.getElementById(`start:${i}`).addEventListener("click", () => startGame(ws));
     }
-}
-
-/**
- * Creates a Game obj from json
- * @param game Json data to create game obj from
- * @returns Game
- */
-export function createGame(game) {
-    return new Game(game);
 }
 
 /**

@@ -20,6 +20,7 @@ public class Game {
     private List<Player> players;
     private List<Item> items;
     private List<Bullet> bullets;
+    private boolean finished = false;
 
     public Game() {
     }
@@ -29,6 +30,14 @@ public class Game {
         this.grid = build.getGrid();
         this.items = build.getItems();
         this.players = build.getPlayers();
+    }
+
+    public boolean isFinished() {
+        return finished;
+    }
+
+    public void setFinished(boolean finished) {
+        this.finished = finished;
     }
 
     public Map<Point, Tile> getGrid() {
@@ -77,23 +86,29 @@ public class Game {
             gridArray.add(factory.createObjectBuilder(tile.toJson()));
         }
 
-        //Creates JsonArray of players
+        return factory.createObjectBuilder()
+                .add("grid", factory.createArrayBuilder(gridArray.build()))
+                .add("players", factory.createArrayBuilder(jsonPlayers()))
+                .add("bullets", factory.createArrayBuilder(jsonBullets()))
+                .build();
+    }
+
+    private JsonArray jsonPlayers() {
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonArrayBuilder jsonPlayers = factory.createArrayBuilder();
         for (Player player : getPlayers()) {
             jsonPlayers.add(factory.createObjectBuilder(player.toJson()));
         }
+        return jsonPlayers.build();
+    }
 
-        //Creates JsonArray of bullets
+    private JsonArray jsonBullets() {
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonArrayBuilder jsonBullets = factory.createArrayBuilder();
         for (Bullet bullet : getBullets()) {
             jsonBullets.add(factory.createObjectBuilder(bullet.toJson()));
         }
-
-        return factory.createObjectBuilder()
-                .add("grid", factory.createArrayBuilder(gridArray.build()))
-                .add("players", factory.createArrayBuilder(jsonPlayers.build()))
-                .add("bullets", factory.createArrayBuilder(jsonBullets.build()))
-                .build();
+        return jsonBullets.build();
     }
 
     /**
@@ -101,11 +116,21 @@ public class Game {
      *
      * @return Returns a json string of this object
      */
-    public String jsonStringGame() {
+    public String jsonStringFullGame() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObject jsonMessage = factory.createObjectBuilder()
                 .add("type", "game")
                 .add("game", factory.createObjectBuilder(toJson()))
+                .build();
+        return jsonMessage.toString();
+    }
+
+    public String jsonStringState() {
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonObject jsonMessage = factory.createObjectBuilder()
+                .add("type", "gameState")
+                .add("players", factory.createArrayBuilder(jsonPlayers()))
+                .add("bullets", factory.createArrayBuilder(jsonBullets()))
                 .build();
         return jsonMessage.toString();
     }

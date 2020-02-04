@@ -11,6 +11,17 @@ export default class Game {
     }
 
     /**
+     * Updates current state of players and bullets
+     * @param players
+     * @param bullets
+     */
+    update(players, bullets){
+        console.log("PLAYERS" + players + "BULLETS" + bullets);
+        this.players = players.map((player) => new Player(player));
+        this.bullets = bullets.map((bullet) => new Bullet(bullet));
+    }
+
+    /**
      * Draws current game state to canvas
      * @param ctx Canvas context
      */
@@ -30,8 +41,9 @@ export default class Game {
             ctx.fillRect(tile.point.x * size, tile.point.y * size, size, size);
             ctx.strokeRect(tile.point.x * size, tile.point.y * size, size, size);
 
-            ctx.fillStyle = "black";
-            ctx.fillText(`x:[${tile.point.x}] y:[${tile.point.y}]`, tile.point.x * size + 2, tile.point.y * size + 10);
+            // DEBUG
+            // ctx.fillStyle = "black";
+            // ctx.fillText(`x:[${tile.point.x}] y:[${tile.point.y}]`, tile.point.x * size + 2, tile.point.y * size + 10);
         }
         //Draw players
         for (const player of this.players) {
