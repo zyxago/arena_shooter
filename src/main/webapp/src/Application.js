@@ -5,7 +5,7 @@ import Game from "./entities/Game";
 
 export default class Application {
     constructor() {
-        this.url = "ws://localhost:8080/arena_shooter/endpoint";
+        this.url = "ws://10.16.58.160:8080/arena_shooter/endpoint";
         this.ws = new WebSocket(this.url);
         this.canvas = new Canvas(document.getElementById("canvas"));
         this.moveKeyEnabled = true;
@@ -13,7 +13,6 @@ export default class Application {
         this.addGameListeners();
         this.ws.addEventListener("message", e => {
             const data = JSON.parse(e.data);
-            console.log(data);
             switch (data.type) {
                 case "newUser":
                     newUser(this.ws);
@@ -38,7 +37,7 @@ export default class Application {
                     alert("DEFEAT!");
                     break;
                 case "gameState":
-                    this.game.update(data.players, data.bullets);
+                    this.game.update(data.players, data.bullets, data.items);
                     this.game.draw(this.canvas.ctx);
             }
         });
@@ -58,6 +57,7 @@ export default class Application {
             send(this.ws, "move", moveAction(e))
         }
     }
+
     enableMoveListener(){
         this.moveKeyEnabled = true
     }
@@ -68,10 +68,10 @@ export default class Application {
             send(this.ws, "attack", attackAction(e))
         }
     }
+
     enableAttackListener(){
         this.attackKeyEnabled = true
     }
-
 
     removeGameListeners(){
         removeEventListener("keydown", this.moveListener);
@@ -83,6 +83,8 @@ export default class Application {
     destroyGame(){
         this.removeGameListeners();
         this.game = undefined;
+        this.attackKeyEnabled = true;
+        this.moveKeyEnabled = true;
         this.canvas.ctx.clearRect(0,0,this.canvas.canvas.width,this.canvas.canvas.height);
     }
 }

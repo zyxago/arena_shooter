@@ -20,6 +20,7 @@ public class Game {
     private List<Player> players;
     private List<Item> items;
     private List<Bullet> bullets;
+    private List<Tile> spawnTiles;
     private boolean finished = false;
 
     public Game() {
@@ -30,6 +31,7 @@ public class Game {
         this.grid = build.getGrid();
         this.items = build.getItems();
         this.players = build.getPlayers();
+        this.spawnTiles = build.getSpawnTiles();
     }
 
     public boolean isFinished() {
@@ -72,6 +74,14 @@ public class Game {
         this.bullets = bullets;
     }
 
+    public List<Tile> getSpawnTiles() {
+        return spawnTiles;
+    }
+
+    public void setSpawnTiles(List<Tile> spawnTiles) {
+        this.spawnTiles = spawnTiles;
+    }
+
     /**
      * Converts this object to JsonObject
      *
@@ -79,20 +89,31 @@ public class Game {
      */
     private JsonObject toJson() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
-
-        //Creates JsonArray of grid
-        JsonArrayBuilder gridArray = factory.createArrayBuilder();
-        for (Tile tile : getGrid().values()) {
-            gridArray.add(factory.createObjectBuilder(tile.toJson()));
-        }
-
         return factory.createObjectBuilder()
-                .add("grid", factory.createArrayBuilder(gridArray.build()))
+                .add("grid", factory.createArrayBuilder(jsonGrid()))
                 .add("players", factory.createArrayBuilder(jsonPlayers()))
                 .add("bullets", factory.createArrayBuilder(jsonBullets()))
+                .add("items", factory.createArrayBuilder(jsonItems()))
                 .build();
     }
 
+    /**
+     *
+     * @return Returns jsonArray of all tiles in this game
+     */
+    private JsonArray jsonGrid(){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonArrayBuilder jsonGrid = factory.createArrayBuilder();
+        for (Tile tile : getGrid().values()) {
+            jsonGrid.add(factory.createObjectBuilder(tile.toJson()));
+        }
+        return  jsonGrid.build();
+    }
+
+    /**
+     *
+     * @return Returns jsonArray of all players in this game
+     */
     private JsonArray jsonPlayers() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonArrayBuilder jsonPlayers = factory.createArrayBuilder();
@@ -102,11 +123,28 @@ public class Game {
         return jsonPlayers.build();
     }
 
+    /**
+     *
+     * @return Returns jsonArray of all bullets in this game
+     */
     private JsonArray jsonBullets() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonArrayBuilder jsonBullets = factory.createArrayBuilder();
         for (Bullet bullet : getBullets()) {
             jsonBullets.add(factory.createObjectBuilder(bullet.toJson()));
+        }
+        return jsonBullets.build();
+    }
+
+    /**
+     *
+     * @return Returns jsonArray of all items in this game
+     */
+    private JsonArray jsonItems(){
+        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonArrayBuilder jsonBullets = factory.createArrayBuilder();
+        for (Item item : getItems()) {
+            jsonBullets.add(factory.createObjectBuilder(item.toJson()));
         }
         return jsonBullets.build();
     }
@@ -125,12 +163,17 @@ public class Game {
         return jsonMessage.toString();
     }
 
+    /**
+     *  Json stringify this games dynamic objects like players, items and bullets
+     * @return Returns json string of this games dynamic objects (players, bullets, items)
+     */
     public String jsonStringState() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObject jsonMessage = factory.createObjectBuilder()
                 .add("type", "gameState")
                 .add("players", factory.createArrayBuilder(jsonPlayers()))
                 .add("bullets", factory.createArrayBuilder(jsonBullets()))
+                .add("items", factory.createArrayBuilder(jsonItems()))
                 .build();
         return jsonMessage.toString();
     }

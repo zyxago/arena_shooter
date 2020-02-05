@@ -11,15 +11,12 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 /**
- *
  * @author erikh
  */
-public class Tile extends Entity{
+public class Tile extends Entity {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Tile.class);
-
-    boolean solid;
-    Spawner spawnable;
+    private boolean solid;
+    private Spawner spawnable;
 
     public Tile(Point point, boolean solid, Spawner spawnable) {
         super(point);
@@ -46,15 +43,17 @@ public class Tile extends Entity{
         this.spawnable = spawnable;
     }
 
-    public JsonObject toJson(){
-        LOGGER.debug("To json called");
+    public boolean isSpawner() {
+        return getSpawnable() != null;
+    }
+
+    public JsonObject toJson() {
         JsonObjectBuilder tileBuilder = Json.createObjectBuilder();
-        tileBuilder
-                .add("solid", solid)
+        tileBuilder.add("solid", solid)
                 .add("point", getPoint().toJson());
-        if(spawnable != null){
+        if (spawnable != null) {
             tileBuilder.add("spawns", true);
-        } else{
+        } else {
             tileBuilder.add("spawns", false);
         }
         return tileBuilder.build();

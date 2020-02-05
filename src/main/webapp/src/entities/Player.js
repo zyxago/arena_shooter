@@ -25,7 +25,7 @@ export default class Player {
     createDrop(x, y, scale, fill, ctx) {
         const baseX = -35 / 2 * scale;
         const baseY = 35;
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "rgb(154,5,10)";
         ctx.beginPath();
         ctx.arc(
             x + baseX + ((35 * 2) * scale),

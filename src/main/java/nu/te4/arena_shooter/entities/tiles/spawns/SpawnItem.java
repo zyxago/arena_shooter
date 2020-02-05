@@ -1,21 +1,61 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package nu.te4.arena_shooter.entities.tiles.spawns;
 
+import nu.te4.arena_shooter.entities.Item;
+import nu.te4.arena_shooter.entities.Point;
+import nu.te4.arena_shooter.entities.effects.AttackUp;
+import nu.te4.arena_shooter.entities.effects.HealUp;
 import nu.te4.arena_shooter.interfaces.Spawner;
 
+import java.util.Date;
+
 /**
- *
  * @author erikh
  */
 public class SpawnItem implements Spawner {
 
-    @Override
-    public void spawn() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private int cooldown;
+    private long prevSpawn;
+    private boolean spawnReady;
+
+    public SpawnItem(int cooldown) {
+        this.cooldown = cooldown;
+        this.prevSpawn = new Date().getTime();
     }
-    
+
+    public boolean isSpawnReady() {
+        //Get the time difference in seconds
+        long diff = (new Date().getTime() - prevSpawn) / 1000 % 60;
+        if (diff >= cooldown) {
+            spawnReady = true;
+        } else {
+            spawnReady = false;
+        }
+        return spawnReady;
+    }
+
+    @Override
+    public Item spawn(Point spawnPoint) {
+        setPrevSpawn(new Date().getTime());
+        if (Math.random() > .1) {
+            return new Item(spawnPoint, new HealUp());
+        }
+        return new Item(spawnPoint, new AttackUp());
+    }
+
+    public float getCooldown() {
+        return cooldown;
+    }
+
+    public void setCooldown(int cooldown) {
+        this.cooldown = cooldown;
+    }
+
+    public long getPrevSpawn() {
+        return prevSpawn;
+    }
+
+    public void setPrevSpawn(long prevSpawn) {
+        this.prevSpawn = prevSpawn;
+    }
+
 }

@@ -5,10 +5,14 @@
  */
 package nu.te4.arena_shooter.interfaces;
 
+import nu.te4.arena_shooter.entities.Entity;
+import nu.te4.arena_shooter.entities.Point;
+
 /**
  *
  * @author erikh
  */
-public interface Spawner {
-    void spawn();
+public interface Spawner<T extends Entity> {
+    T spawn(Point spawnPoint);
+    boolean isSpawnReady();
 }

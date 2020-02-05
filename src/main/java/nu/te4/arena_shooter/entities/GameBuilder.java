@@ -12,6 +12,7 @@ public class GameBuilder {
     private List<Player> players;
     private List<Item> items;
     private List<Bullet> bullets;
+    private  List<Tile> spawnTiles;
 
     public GameBuilder() {
     }
@@ -28,6 +29,14 @@ public class GameBuilder {
         }
         if(getBullets() == null){
             bullets = new ArrayList<>();
+        }
+        if(getSpawnTiles() == null){
+            spawnTiles = new ArrayList<>();
+            for(Tile tile : getGrid().values()){
+                if(tile.isSpawner()){
+                    spawnTiles.add(tile);
+                }
+            }
         }
         return new Game(this);
     }
@@ -65,6 +74,15 @@ public class GameBuilder {
 
     public GameBuilder Bullets(List<Bullet> bullets) {
         this.bullets = bullets;
+        return this;
+    }
+
+    public List<Tile> getSpawnTiles() {
+        return spawnTiles;
+    }
+
+    public GameBuilder SpawnTiles(List<Tile> spawnTiles) {
+        this.spawnTiles = spawnTiles;
         return this;
     }
 }

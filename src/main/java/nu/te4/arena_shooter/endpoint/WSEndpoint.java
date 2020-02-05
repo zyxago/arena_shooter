@@ -32,7 +32,11 @@ public class WSEndpoint {
     private static final Map<Integer, GameHandler> GAMES = new HashMap<>();
     private static final Map<Integer, ScheduledExecutorService> SCHEDULED_GAME_UPDATES = new HashMap<>();
 
-
+    /**
+     *
+     * @param message
+     * @param user
+     */
     @OnMessage
     public void onMessage(String message, Session user) {
         String msgType = message.substring(0, message.indexOf(':'));
@@ -46,32 +50,40 @@ public class WSEndpoint {
 
             } else if (msgType.equals("join")) {
                 LOGGER.info("Join command initiated by " + user.getUserProperties().get("username"));
-                user.getUserProperties().put("lobby", message);
-                broadcastMessege(getJsonMessenger().updateUsersMessage());
-
+                boolean inGame = false;
+                for(GameHandler gameHandler : GAMES.values()){
+                    for(Player player : gameHandler.getGame().getPlayers()){
+                        if(player.getPlayerNr() == Integer.parseInt((String)user.getUserProperties().get("playerNr"))){
+                            inGame = true;
+                        }
+                    }
+                }
+                if(!inGame){
+                    user.getUserProperties().put("lobby", message);
+                    broadcastMessege(getJsonMessenger().updateUsersMessage());
+                }
             } else {
                 int lobby = Integer.parseInt((String) user.getUserProperties().get("lobby"));
 
                 if (msgType.equals("start")) {
                     LOGGER.info("Start command initiated by " + user.getUserProperties().get("username"));
-                    GAMES.put(lobby, creatGame(lobby));
-                    getJsonMessenger().fullGameInfo(GAMES.get(lobby).getGame());
+                    if(!GAMES.containsKey(lobby)){
+                        GAMES.put(lobby, creatGame(lobby));
+                        getJsonMessenger().fullGameInfo(GAMES.get(lobby).getGame());
+                    }
                 } else {
                     if (!message.equals("")) {
                         int playerNr = Integer.parseInt((String) user.getUserProperties().get("playerNr"));
                         int dirX = Integer.parseInt(message.substring(0, message.indexOf(",")));
                         int dirY = Integer.parseInt(message.substring(message.indexOf(",") + 1));
-                        LOGGER.info("X:" + dirX + " Y:" + dirY);
                         if (msgType.equals("move")) {
-                            LOGGER.info("Move command initiated by " + user.getUserProperties().get("username"));
                             GAMES.get(lobby).playerMove(playerNr, dirX, dirY);
-
                         } else if (msgType.equals("attack")) {
-                            LOGGER.info("Attack command initiated by " + user.getUserProperties().get("username"));
                             GAMES.get(lobby).playerAttack(playerNr, dirX, dirY);
                         }
+                        getJsonMessenger().gameStateMessage(GAMES.get(lobby).getGame());
                     }
-                    getJsonMessenger().gameStateMessage(GAMES.get(lobby).getGame());
+
                 }
             }
         } catch (Exception e) {
@@ -79,6 +91,10 @@ public class WSEndpoint {
         }
     }
 
+    /**
+     *
+     * @param user
+     */
     @OnOpen
     public void open(Session user) {
         LOGGER.debug("New Session created");
@@ -102,8 +118,16 @@ public class WSEndpoint {
 
     }
 
+    /**
+     *
+     * @param user
+     */
     @OnClose
     public void close(Session user) {
+        if(GAMES.containsKey(Integer.parseInt((String)user.getUserProperties().get("lobby")))){
+            GAMES.get(Integer.parseInt((String)user.getUserProperties().get("lobby")))
+                    .removeDisconnectedPlayer(Integer.parseInt((String)user.getUserProperties().get("playerNr")));
+        }
         SessionHandler.SESSIONS.remove(user);
     }
 
@@ -121,6 +145,10 @@ public class WSEndpoint {
 
     }
 
+    /**
+     *
+     * @param lobby
+     */
     public void destroyGame(int lobby) {
         SCHEDULED_GAME_UPDATES.get(lobby).shutdownNow();
         GAMES.remove(lobby);
@@ -145,6 +173,7 @@ public class WSEndpoint {
                 .Players(players)
                 .build());
         gameHandler.randomizePlayerPos();
+
         //Adds scheduler to run update() every second and send current game state after update
         Thread update = new Thread(() -> {
             if(gameHandler.getGame().isFinished()){
@@ -154,8 +183,9 @@ public class WSEndpoint {
             getJsonMessenger().gameStateMessage(GAMES.get(lobby).getGame());
         });
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        executor.scheduleAtFixedRate(update, 0, 100, TimeUnit.MILLISECONDS);
+        executor.scheduleAtFixedRate(update, 0, 50, TimeUnit.MILLISECONDS);
         SCHEDULED_GAME_UPDATES.put(lobby, executor);
+
         return gameHandler;
     }
 }

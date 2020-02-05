@@ -1,13 +1,14 @@
 import Player from "./Player";
 import Tile from "./Tile";
 import Bullet from "./Bullet";
+import Item from "./Item";
 
 export default class Game {
     constructor({grid, players, bullets, items}) {
         this.grid = grid.map((tile) => new Tile(tile));
         this.players = players.map((player) => new Player(player));
         this.bullets = bullets.map((bullet) => new Bullet(bullet));
-        this.items = items
+        this.items = items.map((item) => new Item(item));
     }
 
     /**
@@ -15,10 +16,10 @@ export default class Game {
      * @param players
      * @param bullets
      */
-    update(players, bullets){
-        console.log("PLAYERS" + players + "BULLETS" + bullets);
+    update(players, bullets, items){
         this.players = players.map((player) => new Player(player));
         this.bullets = bullets.map((bullet) => new Bullet(bullet));
+        this.items = items.map((item) => new Item(item));
     }
 
     /**
@@ -53,6 +54,11 @@ export default class Game {
         //Draw bullets
         for(const bullet of this.bullets){
             bullet.draw(ctx, size);
+        }
+
+        //Draw items
+        for(const item of this.items){
+            item.draw(ctx, size);
         }
     }
 }
