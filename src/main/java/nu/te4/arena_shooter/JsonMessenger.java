@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.json.*;
 import javax.websocket.Session;
-import java.util.Set;
 
 public class JsonMessenger {
 
@@ -35,7 +34,7 @@ public class JsonMessenger {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Error in JsonMessenger.sendGameState: " + e.getMessage());
+            LOGGER.error("Error in JsonMessenger.dameStateMessage: " + e.getMessage());
         }
     }
 
@@ -90,6 +89,10 @@ public class JsonMessenger {
         return jsonMessage.toString();
     }
 
+    /**
+     *
+     * @return
+     */
     public String gameWon(){
         JsonObject jsonMessage = Json.createObjectBuilder()
                 .add("type", "won")
@@ -97,6 +100,10 @@ public class JsonMessenger {
         return jsonMessage.toString();
     }
 
+    /**
+     *
+     * @return
+     */
     public String gameLost(){
         JsonObject jsonMessage = Json.createObjectBuilder()
                 .add("type", "lost")
@@ -104,6 +111,10 @@ public class JsonMessenger {
         return jsonMessage.toString();
     }
 
+    /**
+     *
+     * @param game
+     */
     public void fullGameInfo(Game game){
         try {
             for (Session session : SessionHandler.SESSIONS) {
@@ -114,7 +125,7 @@ public class JsonMessenger {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Error in JsonMessenger.sendGameState: " + e.getMessage());
+            LOGGER.error("Error in JsonMessenger.fullGameInfo: " + e.getMessage());
         }
     }
 }

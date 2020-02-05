@@ -10,7 +10,6 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 /**
- *
  * @author erikh
  */
 public class Bullet extends Entity implements Moveable {
@@ -68,16 +67,16 @@ public class Bullet extends Entity implements Moveable {
         this.dead = dead;
     }
 
-    public void move(int... dir){
-        setPoint(new Point(getPoint().getX()+getDirX(), getPoint().getY() + getDirY()));
+    public void move(int... dir) {
+        setPoint(new Point(getPoint().getX() + getDirX(), getPoint().getY() + getDirY()));
     }
 
-    public JsonObject toJson(){
+    public JsonObject toJson() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder bullet = factory.createObjectBuilder();
         return bullet.add("color", color.toString())
                 .add("point", factory.createObjectBuilder(getPoint().toJson()))
                 .build();
     }
-            
+
 }

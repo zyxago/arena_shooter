@@ -21,29 +21,10 @@ public class GameHandler {
     }
 
     /**
-     * @param playerNr
-     * @param dirX
-     * @param dirY
+     * "Game loop"
+     * Executes every 100 milliseconds form a scheduler
      */
-    public void playerMove(int playerNr, int dirX, int dirY) {
-        for (Player player : getGame().getPlayers()) {
-            if (player.getPlayerNr() == playerNr) {
-                if (validateMove(player, dirX, dirY)) {
-                    player.move(dirX, dirY);
-                    //checkPlayerBulletCollision();
-                    for (Item item : getGame().getItems()) {
-                        if (player.getPoint().equals(item.getPoint())) {
-                            item.getEffect().effect(player);
-                            item.setDead(true);
-                        }
-                    }
-                }
-            }
-        }
-        getGame().getItems().removeIf(Item::isDead);
-    }
-
-    public void update() {
+    public synchronized void update() {
         for (Tile tile : getGame().getSpawnTiles()) {
             boolean occupied = false;
             for (Item item : getGame().getItems()) {
@@ -61,11 +42,12 @@ public class GameHandler {
         for (Bullet bullet : getGame().getBullets()) {
             if (validateMove(bullet, bullet.getDirX(), bullet.getDirY())) {
                 bullet.move();
-                checkPlayerBulletCollision();
             } else {
                 bullet.setDead(true);
             }
         }
+
+        checkPlayerBulletCollision();
 
         for (Player player : getGame().getPlayers()) {
             if (player.isDead()) {
@@ -85,18 +67,24 @@ public class GameHandler {
         getGame().getBullets().removeIf(Bullet::isDead);
 
         if (getGame().getPlayers().size() <= 1) {
+            getGame().setWinner(getGame().getPlayers().get(0));
             getGame().setFinished(true);
         }
     }
 
+    /**
+     * Removes a player form game
+     *
+     * @param playerNr Players Number
+     */
     public void removeDisconnectedPlayer(int playerNr) {
         getGame().getPlayers().removeIf((player) -> player.getPlayerNr() == playerNr);
     }
 
-    public void checkPlayerBulletCollision() {
+    private void checkPlayerBulletCollision() {
         for (Bullet bullet : getGame().getBullets()) {
             for (Player player : getGame().getPlayers()) {
-                if (player.getPoint().equals(bullet.getPoint())) {
+                if (player.getPoint().equals(bullet.getPoint())&& !bullet.isDead()) {
                     bullet.setDead(true);
                     player.setHp(player.getHp() - bullet.getOwner().getDmg());
                 }
@@ -125,13 +113,34 @@ public class GameHandler {
         }
         for (Player player : getGame().getPlayers()) {
             if (player.getPlayerNr() == playerNr) {
-                Point point = new Point(player.getPoint().getX() + dirX, player.getPoint().getY() + dirY);
-                if (!invalidPoints.contains(point)) {
-                    LOGGER.info("Bullet added!");
-                    getGame().getBullets().add(new Bullet(point, player, player.getColor(), dirX, dirY));
+                if (!invalidPoints.contains(player.getPoint())) {
+                    getGame().getBullets().add(new Bullet(player.getPoint(), player, player.getColor(), dirX, dirY));
                 }
             }
         }
+    }
+
+    /**
+     * @param playerNr
+     * @param dirX
+     * @param dirY
+     */
+    public void playerMove(int playerNr, int dirX, int dirY) {
+        for (Player player : getGame().getPlayers()) {
+            if (player.getPlayerNr() == playerNr) {
+                if (validateMove(player, dirX, dirY)) {
+                    player.move(dirX, dirY);
+                    //checkPlayerBulletCollision();
+                    for (Item item : getGame().getItems()) {
+                        if (player.getPoint().equals(item.getPoint())) {
+                            item.getEffect().effect(player);
+                            item.setDead(true);
+                        }
+                    }
+                }
+            }
+        }
+        getGame().getItems().removeIf(Item::isDead);
     }
 
     /**

@@ -32,12 +32,12 @@ export default class Game {
         for (const tile of this.grid) {
             if (!tile.solid) {
                 if (tile.spawns) {
-                    ctx.fillStyle = "green"
+                    ctx.fillStyle = "rgba(20,155,20,0.50)"
                 } else {
                     ctx.fillStyle = "white";
                 }
             } else {
-                ctx.fillStyle = "brown";
+                ctx.fillStyle = "rgb(41,41,41)";
             }
             ctx.fillRect(tile.point.x * size, tile.point.y * size, size, size);
             ctx.strokeRect(tile.point.x * size, tile.point.y * size, size, size);

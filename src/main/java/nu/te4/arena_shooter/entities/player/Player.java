@@ -11,7 +11,6 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 /**
- *
  * @author erikh
  */
 public class Player extends Entity implements Moveable {
@@ -22,7 +21,7 @@ public class Player extends Entity implements Moveable {
     private int playerNr;
     private boolean dead;
 
-    public Player(PlayerBuilder build){
+    public Player(PlayerBuilder build) {
         super(build.getPoint());
         hp = build.getHp();
         maxHp = build.getMaxHp();
@@ -79,11 +78,11 @@ public class Player extends Entity implements Moveable {
         this.playerNr = playerNr;
     }
 
-    public void move(int... dir){
-        setPoint(new Point(getPoint().getX()+dir[0], getPoint().getY() + dir[1]));
+    public void move(int... dir) {
+        setPoint(new Point(getPoint().getX() + dir[0], getPoint().getY() + dir[1]));
     }
 
-    public JsonObject toJson(){
+    public JsonObject toJson() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder player = factory.createObjectBuilder();
         return player.add("hp", getHp())

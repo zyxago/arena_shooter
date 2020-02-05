@@ -6,9 +6,16 @@ export default class Bullet{
         this.color = color;
     }
 
+    /**
+     *
+     * @param ctx
+     * @param size
+     */
     draw(ctx, size){
-        const offset = size/2;
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.point.x * size + offset/2, this.point.y * size + offset/2, size - offset, size - offset);
+        ctx.beginPath();
+        ctx.ellipse(this.point.x * size + size/2, this.point.y * size + size/2, size*0.2, size*0.2, 0, 0, Math.PI*2, false);
+        ctx.fill();
+        ctx.stroke();
     }
 }

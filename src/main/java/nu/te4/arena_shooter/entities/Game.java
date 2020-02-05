@@ -22,6 +22,7 @@ public class Game {
     private List<Bullet> bullets;
     private List<Tile> spawnTiles;
     private boolean finished = false;
+    private Player winner;
 
     public Game() {
     }
@@ -32,6 +33,14 @@ public class Game {
         this.items = build.getItems();
         this.players = build.getPlayers();
         this.spawnTiles = build.getSpawnTiles();
+    }
+
+    public Player getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Player winner) {
+        this.winner = winner;
     }
 
     public boolean isFinished() {
@@ -98,20 +107,18 @@ public class Game {
     }
 
     /**
-     *
      * @return Returns jsonArray of all tiles in this game
      */
-    private JsonArray jsonGrid(){
+    private JsonArray jsonGrid() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonArrayBuilder jsonGrid = factory.createArrayBuilder();
         for (Tile tile : getGrid().values()) {
             jsonGrid.add(factory.createObjectBuilder(tile.toJson()));
         }
-        return  jsonGrid.build();
+        return jsonGrid.build();
     }
 
     /**
-     *
      * @return Returns jsonArray of all players in this game
      */
     private JsonArray jsonPlayers() {
@@ -124,7 +131,6 @@ public class Game {
     }
 
     /**
-     *
      * @return Returns jsonArray of all bullets in this game
      */
     private JsonArray jsonBullets() {
@@ -137,10 +143,9 @@ public class Game {
     }
 
     /**
-     *
      * @return Returns jsonArray of all items in this game
      */
-    private JsonArray jsonItems(){
+    private JsonArray jsonItems() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonArrayBuilder jsonBullets = factory.createArrayBuilder();
         for (Item item : getItems()) {
@@ -164,7 +169,8 @@ public class Game {
     }
 
     /**
-     *  Json stringify this games dynamic objects like players, items and bullets
+     * Json stringify this games dynamic objects like players, items and bullets
+     *
      * @return Returns json string of this games dynamic objects (players, bullets, items)
      */
     public String jsonStringState() {
