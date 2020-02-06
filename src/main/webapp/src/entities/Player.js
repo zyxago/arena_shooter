@@ -29,7 +29,7 @@ export default class Player {
         const offset = tileSize / 4;
         ctx.fillStyle = this.color;
         ctx.fillRect(this.point.x * tileSize + offset / 2, this.point.y * tileSize + offset / 2, tileSize - offset, tileSize - offset);
-
+        ctx.strokeRect(this.point.x * tileSize + offset / 2, this.point.y * tileSize + offset / 2, tileSize - offset, tileSize - offset);
         for (let i = 0; i < this.maxHp; i++) {
             let fill = "rgb(255,27,52)";
             if (!(this.hp > i)) {

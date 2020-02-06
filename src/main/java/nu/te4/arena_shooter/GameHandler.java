@@ -89,7 +89,7 @@ public class GameHandler {
     private void checkPlayerBulletCollision() {
         for (Bullet bullet : getGame().getBullets()) {
             for (Player player : getGame().getPlayers()) {
-                if (player.getPoint().equals(bullet.getPoint()) && !bullet.isDead()) {
+                if (player.getPoint().equals(bullet.getPoint()) && !bullet.isDead() && bullet.getOwner() != player) {
                     bullet.setDead(true);
                     player.setHp(player.getHp() - bullet.getOwner().getDmg());
                 }

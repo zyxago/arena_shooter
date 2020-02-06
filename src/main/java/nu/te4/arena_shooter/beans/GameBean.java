@@ -12,7 +12,6 @@ import nu.te4.arena_shooter.entities.player.PlayerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ejb.Stateless;
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.*;
@@ -22,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 
 import static nu.te4.arena_shooter.JsonMessenger.getJsonMessenger;
 
-@Stateless
 public class GameBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameBean.class);

@@ -2,12 +2,10 @@ package nu.te4.arena_shooter.beans;
 
 import nu.te4.arena_shooter.SessionHandler;
 
-import javax.ejb.Stateless;
 import javax.websocket.Session;
 
 import static nu.te4.arena_shooter.JsonMessenger.getJsonMessenger;
 
-@Stateless
 public class UserBean {
 
     /**

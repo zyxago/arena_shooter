@@ -31,7 +31,7 @@ public class GridFactory {
         for (int i = 0; i < spawnTiles; i++) {
             Point point = new Point(r.nextInt(width), r.nextInt(height));
             if (!grid.get(point).isSolid()) {
-                grid.get(point).setSpawnable(new SpawnItem(30));
+                grid.get(point).setSpawnable(new SpawnItem(20));
             }
         }
         return grid;

@@ -1,12 +1,12 @@
 package nu.te4.arena_shooter.resources;
 
-import javax.ejb.EJB;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import nu.te4.arena_shooter.JsonMessenger;
 import nu.te4.arena_shooter.SessionHandler;
 import nu.te4.arena_shooter.beans.GameBean;
 import nu.te4.arena_shooter.beans.UserBean;
@@ -19,12 +19,8 @@ import static nu.te4.arena_shooter.JsonMessenger.getJsonMessenger;
 public class WSEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WSEndpoint.class);
-
-
-    @EJB
-    UserBean userBean;
-    @EJB
-    GameBean gameBean;
+    private static final UserBean userBean = new UserBean();
+    private static final GameBean gameBean = new GameBean();
 
     /**
      * When users(sessions) send a message this will capture it and handle it
@@ -78,7 +74,7 @@ public class WSEndpoint {
     public void open(Session user) {
         userBean.newUser(user);
         try {
-            user.getBasicRemote().sendText(getJsonMessenger().newUserMessage());
+            user.getBasicRemote().sendText(getJsonMessenger().newUserMessage(user));
             user.getBasicRemote().sendText(getJsonMessenger().lobbyMessage());
         } catch (Exception e) {
             LOGGER.error("Error in WSEndpoint.open: " + e.getMessage());
@@ -95,6 +91,7 @@ public class WSEndpoint {
     public void close(Session user) {
         gameBean.removePlayer(user);
         SessionHandler.SESSIONS.remove(user);
+        broadcastMessege(getJsonMessenger().updateUsersMessage());
     }
 
     /**

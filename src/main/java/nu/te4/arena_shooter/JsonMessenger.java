@@ -50,6 +50,7 @@ public class JsonMessenger {
     }
 
     /**
+     *
      * @return Returns String that specifies how many lobbies to create
      */
     public String lobbyMessage() {
@@ -61,6 +62,7 @@ public class JsonMessenger {
     }
 
     /**
+     *
      * @return
      */
     private JsonArray usersJson() {
@@ -69,19 +71,22 @@ public class JsonMessenger {
         for (Session user : SessionHandler.SESSIONS) {
             jsonUser.add(factory.createObjectBuilder()
                     .add("username", (String) user.getUserProperties().get("username"))
+                    .add("playerNr", (String) user.getUserProperties().get("playerNr"))
                     .add("lobby", (String) user.getUserProperties().get("lobby")));
         }
         return jsonUser.build();
     }
 
     /**
-     * Message to send to new users
+     * Message to send to new users containing that users playerNr
      *
+     * @param user user to get playerNr from
      * @return
      */
-    public String newUserMessage() {
+    public String newUserMessage(Session user) {
         JsonObject jsonMessage = Json.createObjectBuilder()
                 .add("type", "newUser")
+                .add("playerNr", (String)user.getUserProperties().get("playerNr"))
                 .build();
         return jsonMessage.toString();
     }
