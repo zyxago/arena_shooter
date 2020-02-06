@@ -2,14 +2,14 @@ import Canvas from "./entities/Canvas";
 import {attackAction, moveAction} from "./logic/actions";
 import {initLobbies, newUser, send, updateUsers} from "./logic/wsHandler";
 import Game from "./entities/Game";
-import {updateLobbyStates} from "./logic/lobbies";
+import {updateLobbyStates, updateLobbyChat} from "./logic/lobbies";
 
 export default class Application {
     /**
      * Main application
      */
     constructor() {
-        this.url = "ws://10.16.58.160:8080/arena_shooter/endpoint";
+        this.url = "ws://localhost:8080/arena_shooter/endpoint";
         this.ws = new WebSocket(this.url);
         this.canvas = new Canvas(document.getElementById("canvas"));
         this.moveKeyEnabled = true;
@@ -38,6 +38,7 @@ export default class Application {
                 case "lobbyCount":
                     this.lobbyCount = data.lobbies;
                     initLobbies(this.ws, data.lobbies);
+                    updateLobbyStates(data.users, this.lobbyCount, this.userPlayerNr);
                     break;
                 case "won":
                     this.destroyGame();
@@ -51,6 +52,10 @@ export default class Application {
                     this.game.update(data.players, data.bullets, data.items);
                     this.canvas.ctx.clearRect(0, 0, this.canvas.canvas.width, this.canvas.canvas.height);
                     this.game.draw(this.canvas.ctx);
+                    break;
+                case "updateChat":
+                    updateLobbyChat(data);
+                    break;
             }
         });
     }

@@ -40,6 +40,8 @@ public class WSEndpoint {
                 // If user wants to join a lobby, check if option is available then put user in new lobby
             } else if (msgType.equals("join")) {
                 broadcastMessege(gameBean.joinGameLobby(user, message));
+            } else if (msgType.equals("chat")) {
+                broadcastMessege(userBean.chat(user, message));
             } else {
                 int lobby = Integer.parseInt((String) user.getUserProperties().get("lobby"));
 

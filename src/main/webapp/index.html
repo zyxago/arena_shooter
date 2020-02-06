@@ -15,16 +15,22 @@
         <canvas id="canvas"></canvas>
     </div>
     <div class="column">
+        <div id="tabs"></div>
+        <div id="lobbies"></div>
+    </div>
+    <div class="column ">
         <label class="label" for="users">Users Online</label>
         <textarea id="users" readonly cols="18" rows="20"></textarea>
     </div>
-    <div id="lobbies"></div>
-    <div class="footer">
-        <img src="dist/images/controlls.png" alt="Arrow keys for shooting. WASD keys for moving">
-        <div>
-            <span>WASD For Moving</span>
-            <span>Arrow Keys For Attacking</span>
-        </div>
+</div>
+<div id="controls" class="tile is-ancestor is-vertical">
+    <figure class="image tile is-2">
+        <img src="dist/images/controlls.png" alt="Arrow keys for shooting. WASD keys for moving" width="256"
+             height="128">
+    </figure>
+    <div class="tile is-2">
+        <span>W A S D For Moving</span>
+        <span>Arrow Keys For Attacking</span>
     </div>
 </div>
 </body>

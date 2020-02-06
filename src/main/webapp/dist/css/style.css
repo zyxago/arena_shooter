@@ -7102,15 +7102,38 @@ label.panel-block {
   padding: 3rem 1.5rem 6rem; }
 
 html {
-  background-color: beige; }
+  background-color: #f5f5dc; }
 
 body {
   margin: 10px 10px 10px 10px; }
+
+.columns {
+  align-items: flex-start; }
 
 .column {
   flex-grow: 0;
   flex-basis: auto; }
 
+.tile {
+  background-color: #f5f5dc; }
+
+#controls {
+  padding-left: 10%; }
+
 #canvas {
   background-color: white;
   border: 10px solid black; }
+
+.activeTab {
+  background-color: #00d1b2; }
+
+#tabs {
+  display: flex;
+  justify-content: space-between; }
+
+#textareas {
+  display: flex;
+  align-items: flex-start; }
+
+span {
+  padding-left: 15px; }

@@ -11,7 +11,15 @@ export function initLobbies(ws, lobbyCount) {
     for (let i = 0; i < lobbyCount; i++) {
         document.getElementById(`join:${i}`).addEventListener("click", () => joinLobby(ws, i));
         document.getElementById(`start:${i}`).addEventListener("click", () => startGame(ws));
+        document.getElementById(`input:${i}`).addEventListener("keydown", e => {
+            if (e.key === "Enter") {
+                send(ws, "chat", e.target.value);
+                e.target.value = "";
+            }
+        })
     }
+    document.getElementById(`lobbyContainer:0`).style.display = "block";
+    document.getElementById(`tabButton:0`).className += " activeTab";
 }
 
 /**
@@ -46,8 +54,8 @@ export function updateUsers(users, lobbyCount) {
  * @param {WebSocket}ws
  * @param {number}id Id of lobby to join
  */
-export function joinLobby(ws,id) {
-    send(ws,"join", id);
+export function joinLobby(ws, id) {
+    send(ws, "join", id);
 }
 
 /**
@@ -56,7 +64,7 @@ export function joinLobby(ws,id) {
  * @param {WebSocket}ws
  */
 export function startGame(ws) {
-    send(ws,"start", "");
+    send(ws, "start", "");
 }
 
 /**
@@ -69,7 +77,7 @@ export function newUser(ws) {
     if (name === "" || name === null) {
         name = "RandomGuy#" + Math.floor(Math.random() * 10000);
     }
-    send(ws,"name", name);
+    send(ws, "name", name);
 }
 
 /**
