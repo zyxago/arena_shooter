@@ -12,36 +12,34 @@ public class JsonMessenger {
 
     private final Logger LOGGER = LoggerFactory.getLogger(JsonMessenger.class);
 
-    private JsonMessenger(){ }
+    private JsonMessenger() {
+    }
 
     private static JsonMessenger jsonMessenger = new JsonMessenger();
 
-    public static JsonMessenger getJsonMessenger(){
+    public static JsonMessenger getJsonMessenger() {
         return jsonMessenger;
     }
 
     /**
+     * Sends state of a game to all players involved in said game
      *
-     * @param game
+     * @param game Game to get state from
      */
     public void gameStateMessage(Game game) {
         try {
             for (Session session : SessionHandler.SESSIONS) {
-                for(Player player: game.getPlayers()){
-                    if(Integer.toString(player.getPlayerNr()).equals(session.getUserProperties().get("playerNr"))){
+                for (Player player : game.getPlayers()) {
+                    if (Integer.toString(player.getPlayerNr()).equals(session.getUserProperties().get("playerNr"))) {
                         session.getBasicRemote().sendText(game.jsonStringState());
                     }
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Error in JsonMessenger.dameStateMessage: " + e.getMessage());
+            LOGGER.error("Error in JsonMessenger.gameStateMessage: " + e.getMessage());
         }
     }
 
-    /**
-     *
-     * @return
-     */
     public String updateUsersMessage() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObject jsonMessage = Json.createObjectBuilder()
@@ -52,8 +50,7 @@ public class JsonMessenger {
     }
 
     /**
-     *
-     * @return
+     * @return Returns String that specifies how many lobbies to create
      */
     public String lobbyMessage() {
         JsonObject jsonMessage = Json.createObjectBuilder()
@@ -64,7 +61,6 @@ public class JsonMessenger {
     }
 
     /**
-     *
      * @return
      */
     private JsonArray usersJson() {
@@ -79,6 +75,7 @@ public class JsonMessenger {
     }
 
     /**
+     * Message to send to new users
      *
      * @return
      */
@@ -90,10 +87,11 @@ public class JsonMessenger {
     }
 
     /**
+     * Send to player winning a game
      *
      * @return
      */
-    public String gameWon(){
+    public String gameWon() {
         JsonObject jsonMessage = Json.createObjectBuilder()
                 .add("type", "won")
                 .build();
@@ -101,10 +99,11 @@ public class JsonMessenger {
     }
 
     /**
+     * Send to player loosing a game
      *
      * @return
      */
-    public String gameLost(){
+    public String gameLost() {
         JsonObject jsonMessage = Json.createObjectBuilder()
                 .add("type", "lost")
                 .build();
@@ -112,14 +111,15 @@ public class JsonMessenger {
     }
 
     /**
+     * Sends full state a game to all players involved in said game
      *
-     * @param game
+     * @param game Game to get state from
      */
-    public void fullGameInfo(Game game){
+    public void fullGameInfo(Game game) {
         try {
             for (Session session : SessionHandler.SESSIONS) {
-                for(Player player: game.getPlayers()){
-                    if(Integer.toString(player.getPlayerNr()).equals(session.getUserProperties().get("playerNr"))){
+                for (Player player : game.getPlayers()) {
+                    if (Integer.toString(player.getPlayerNr()).equals(session.getUserProperties().get("playerNr"))) {
                         session.getBasicRemote().sendText(game.jsonStringFullGame());
                     }
                 }

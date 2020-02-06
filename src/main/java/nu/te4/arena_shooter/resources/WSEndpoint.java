@@ -15,9 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import static nu.te4.arena_shooter.JsonMessenger.getJsonMessenger;
 
-/**
- * @author erikh
- */
 @ServerEndpoint("/endpoint")
 public class WSEndpoint {
 
@@ -31,8 +28,9 @@ public class WSEndpoint {
 
     /**
      * When users(sessions) send a message this will capture it and handle it
+     *
      * @param message Message that a user sent
-     * @param user User that sent the message
+     * @param user    User that sent the message
      */
     @OnMessage
     public void onMessage(String message, Session user) {
@@ -43,7 +41,7 @@ public class WSEndpoint {
             // If new user set username and start lobby
             if (user.getUserProperties().get("username") == null && msgType.equals("name")) {
                 broadcastMessege(userBean.initUser(user, message));
-            // If user wants to join a lobby, check if option is available then put user in new lobby
+                // If user wants to join a lobby, check if option is available then put user in new lobby
             } else if (msgType.equals("join")) {
                 broadcastMessege(gameBean.joinGameLobby(user, message));
             } else {
@@ -73,6 +71,7 @@ public class WSEndpoint {
 
     /**
      * When a new session connection is established save session in list
+     *
      * @param user New session user
      */
     @OnOpen
@@ -89,6 +88,7 @@ public class WSEndpoint {
 
     /**
      * Removes a user from list of sessions when connection is closed
+     *
      * @param user User closing connection
      */
     @OnClose
@@ -99,6 +99,7 @@ public class WSEndpoint {
 
     /**
      * Sends a message to all currently connected sessions
+     *
      * @param msg Message to send
      */
     public void broadcastMessege(String msg) {

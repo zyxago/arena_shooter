@@ -1,8 +1,6 @@
 package nu.te4.arena_shooter.beans;
 
-import nu.te4.arena_shooter.GameHandler;
 import nu.te4.arena_shooter.SessionHandler;
-import nu.te4.arena_shooter.entities.player.Player;
 
 import javax.ejb.Stateless;
 import javax.websocket.Session;
@@ -14,9 +12,10 @@ public class UserBean {
 
     /**
      * Sets playerNr on new user
+     *
      * @param user User to set player number on
      */
-    public void newUser(Session user){
+    public void newUser(Session user) {
         int playerNr = 0;
         int highestNr = 0;
         for (Session session : SessionHandler.SESSIONS) {
@@ -32,6 +31,7 @@ public class UserBean {
 
     /**
      * Sets username and lobby
+     *
      * @param user User to set values on
      * @param name Username of user
      * @return Returns Json String of users new state

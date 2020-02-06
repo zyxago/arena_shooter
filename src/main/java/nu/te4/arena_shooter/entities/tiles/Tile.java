@@ -10,9 +10,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-/**
- * @author erikh
- */
 public class Tile extends Entity {
 
     private boolean solid;
@@ -47,6 +44,10 @@ public class Tile extends Entity {
         return getSpawnable() != null;
     }
 
+    /**
+     *
+     * @return Returns this object as JsonObject
+     */
     public JsonObject toJson() {
         JsonObjectBuilder tileBuilder = Json.createObjectBuilder();
         tileBuilder.add("solid", solid)

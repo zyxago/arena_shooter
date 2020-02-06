@@ -5,10 +5,6 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import java.util.Objects;
 
-/**
- *
- * @author erikh
- */
 public class Point{
     private int x;
     private int y;
@@ -34,6 +30,10 @@ public class Point{
         this.x = x;
     }
 
+    /**
+     *
+     * @return Returns this object as JsonObject
+     */
     public JsonObject toJson(){
         JsonObjectBuilder point = Json.createObjectBuilder();
         return point.add("x", getX())

@@ -4,13 +4,19 @@ import {createGame, initLobbies, newUser, send, updateUsers} from "./logic/wsHan
 import Game from "./entities/Game";
 
 export default class Application {
+    /**
+     * Main application
+     */
     constructor() {
         this.url = "ws://localhost:8080/arena_shooter/endpoint";
         this.ws = new WebSocket(this.url);
         this.canvas = new Canvas(document.getElementById("canvas"));
         this.moveKeyEnabled = true;
-        this.listeners = [];
         this.attackKeyEnabled = true;
+        this.moveListener = this.moveListener.bind(this);
+        this.enableMoveListener = this.enableMoveListener.bind(this);
+        this.attackListener = this.attackListener.bind(this);
+        this.enableAttackListener = this.enableAttackListener.bind(this);
         this.addGameListeners();
         this.ws.addEventListener("message", e => {
             const data = JSON.parse(e.data);
@@ -39,17 +45,17 @@ export default class Application {
                     break;
                 case "gameState":
                     this.game.update(data.players, data.bullets, data.items);
+                    this.canvas.ctx.clearRect(0, 0, this.canvas.canvas.width, this.canvas.canvas.height);
                     this.game.draw(this.canvas.ctx);
             }
         });
     }
 
     addGameListeners() {
-        addEventListener("keydown", this.moveListener.bind(this));
-        addEventListener("keyup", this.enableMoveListener.bind(this));
-        addEventListener("keydown", this.attackListener.bind(this));
-        addEventListener("keyup", this.enableAttackListener.bind(this));
-
+        addEventListener("keydown", this.moveListener);
+        addEventListener("keyup", this.enableMoveListener);
+        addEventListener("keydown", this.attackListener);
+        addEventListener("keyup", this.enableAttackListener);
     }
 
     moveListener(e) {
@@ -74,7 +80,6 @@ export default class Application {
         this.attackKeyEnabled = true
     }
 
-    //FUNKAR EJ
     removeGameListeners() {
         removeEventListener("keydown", this.moveListener);
         removeEventListener("keydown", this.attackListener);

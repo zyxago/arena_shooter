@@ -16,6 +16,11 @@ public class GameHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameHandler.class);
 
+    /**
+     * Creates a gameHandler for a game obj
+     *
+     * @param game game obj to create handler for
+     */
     public GameHandler(Game game) {
         this.game = game;
     }
@@ -84,7 +89,7 @@ public class GameHandler {
     private void checkPlayerBulletCollision() {
         for (Bullet bullet : getGame().getBullets()) {
             for (Player player : getGame().getPlayers()) {
-                if (player.getPoint().equals(bullet.getPoint())&& !bullet.isDead()) {
+                if (player.getPoint().equals(bullet.getPoint()) && !bullet.isDead()) {
                     bullet.setDead(true);
                     player.setHp(player.getHp() - bullet.getOwner().getDmg());
                 }
@@ -100,9 +105,9 @@ public class GameHandler {
 
 
     /**
-     * @param playerNr
-     * @param dirX
-     * @param dirY
+     * @param playerNr Attacking players number
+     * @param dirX     Direction of attack x-axis
+     * @param dirY     Direction of attack y-axis
      */
     public void playerAttack(int playerNr, int dirX, int dirY) {
         List<Point> invalidPoints = new ArrayList();
@@ -121,16 +126,15 @@ public class GameHandler {
     }
 
     /**
-     * @param playerNr
-     * @param dirX
-     * @param dirY
+     * @param playerNr Moving players number
+     * @param dirX     Move direction in x-axis
+     * @param dirY     Move direction in y-axis
      */
     public void playerMove(int playerNr, int dirX, int dirY) {
         for (Player player : getGame().getPlayers()) {
             if (player.getPlayerNr() == playerNr) {
                 if (validateMove(player, dirX, dirY)) {
                     player.move(dirX, dirY);
-                    //checkPlayerBulletCollision();
                     for (Item item : getGame().getItems()) {
                         if (player.getPoint().equals(item.getPoint())) {
                             item.getEffect().effect(player);
@@ -144,14 +148,14 @@ public class GameHandler {
     }
 
     /**
-     * @param obj
-     * @param dirX
-     * @param dirY
-     * @param <T>
-     * @return
+     * @param entity Entity that wants to move
+     * @param dirX   Move direction in x-axis
+     * @param dirY   Move direction in y-axis
+     * @param <T>    Moveable Entities
+     * @return Returns true if move is valid
      */
-    public <T extends Entity> boolean validateMove(T obj, int dirX, int dirY) {
-        Point movePoint = new Point(obj.getPoint().getX() + dirX, obj.getPoint().getY() + dirY);
+    public <T extends Entity> boolean validateMove(T entity, int dirX, int dirY) {
+        Point movePoint = new Point(entity.getPoint().getX() + dirX, entity.getPoint().getY() + dirY);
         if (getGame().getGrid().containsKey(movePoint)) {
             return !getGame().getGrid().get(movePoint).isSolid();
         }

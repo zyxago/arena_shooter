@@ -1,9 +1,7 @@
 package nu.te4.arena_shooter.entities;
 
-import nu.te4.arena_shooter.entities.Point;
 import nu.te4.arena_shooter.entities.tiles.Tile;
 import nu.te4.arena_shooter.entities.tiles.spawns.SpawnItem;
-import nu.te4.arena_shooter.interfaces.Spawner;
 
 import java.util.HashMap;
 import java.util.Map;

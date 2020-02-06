@@ -9,9 +9,6 @@ import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-/**
- * @author erikh
- */
 public class Bullet extends Entity implements Moveable {
     private Player owner;
     private PlayerColor color;
@@ -71,6 +68,10 @@ public class Bullet extends Entity implements Moveable {
         setPoint(new Point(getPoint().getX() + getDirX(), getPoint().getY() + getDirY()));
     }
 
+    /**
+     *
+     * @return Returns this object as JsonObject
+     */
     public JsonObject toJson() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder bullet = factory.createObjectBuilder();

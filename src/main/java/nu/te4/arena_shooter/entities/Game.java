@@ -9,9 +9,6 @@ import javax.json.*;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @author erikh
- */
 public class Game {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Game.class);
@@ -92,9 +89,7 @@ public class Game {
     }
 
     /**
-     * Converts this object to JsonObject
-     *
-     * @return this obj as JsonObject
+     * @return Returns this object as JsonObject
      */
     private JsonObject toJson() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);

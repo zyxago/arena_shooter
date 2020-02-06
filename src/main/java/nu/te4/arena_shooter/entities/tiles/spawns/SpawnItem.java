@@ -8,14 +8,10 @@ import nu.te4.arena_shooter.interfaces.Spawner;
 
 import java.util.Date;
 
-/**
- * @author erikh
- */
 public class SpawnItem implements Spawner {
 
     private int cooldown;
     private long prevSpawn;
-    private boolean spawnReady;
 
     public SpawnItem(int cooldown) {
         this.cooldown = cooldown;
@@ -25,6 +21,7 @@ public class SpawnItem implements Spawner {
     public boolean isSpawnReady() {
         //Get the time difference in seconds
         long diff = (new Date().getTime() - prevSpawn) / 1000 % 60;
+        boolean spawnReady;
         if (diff >= cooldown) {
             spawnReady = true;
         } else {

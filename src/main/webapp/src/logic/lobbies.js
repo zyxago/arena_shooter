@@ -1,6 +1,7 @@
 /**
  * Creates DOM lobbies
- * @param amount Amount of lobbies to create
+ *
+ * @param {number}amount Amount of lobbies to create
  */
 export function createLobbies(amount){
     const parent = document.getElementById("lobbies");

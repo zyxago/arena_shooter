@@ -1,6 +1,5 @@
 package nu.te4.arena_shooter.entities.player;
 
-import nu.te4.arena_shooter.SessionHandler;
 import nu.te4.arena_shooter.entities.Entity;
 import nu.te4.arena_shooter.entities.Point;
 import nu.te4.arena_shooter.interfaces.Moveable;
@@ -10,9 +9,6 @@ import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-/**
- * @author erikh
- */
 public class Player extends Entity implements Moveable {
     private int hp;
     private int maxHp;
@@ -82,6 +78,10 @@ public class Player extends Entity implements Moveable {
         setPoint(new Point(getPoint().getX() + dir[0], getPoint().getY() + dir[1]));
     }
 
+    /**
+     *
+     * @return Returns this object as JsonObject
+     */
     public JsonObject toJson() {
         JsonBuilderFactory factory = Json.createBuilderFactory(null);
         JsonObjectBuilder player = factory.createObjectBuilder();

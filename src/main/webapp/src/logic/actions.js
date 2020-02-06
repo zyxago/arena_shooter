@@ -1,7 +1,8 @@
 /**
+ * Checks key press and returns a direction in form of "x,y"
  *
- * @param {Event}e
- * @returns {string}
+ * @param {Event}e Keyboard Event
+ * @returns {String} players move direction formatted as string
  */
 export function moveAction(e) {
     const key = e.key;
@@ -28,9 +29,10 @@ export function moveAction(e) {
 }
 
 /**
+ * Checks key press and returns a direction in form of "x,y"
  *
- * @param {Event}e
- * @returns {string}
+ * @param {Event}e Keyboard Event
+ * @returns {string} players attack direction formatted as string
  */
 export function attackAction(e) {
     const key = e.key;

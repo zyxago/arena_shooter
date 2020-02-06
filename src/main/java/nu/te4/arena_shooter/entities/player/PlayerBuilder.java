@@ -15,24 +15,24 @@ public class PlayerBuilder {
 
     }
 
-    public Player build() throws IllegalStateException{
-        if(color == null) {
+    public Player build() throws IllegalStateException {
+        if (color == null) {
             throw new IllegalStateException("Color must be set!");
         }
-        if(hp <= 0){
+        if (hp <= 0) {
             hp = 1;
         }
-        if(maxHp <= 0){
+        if (maxHp <= 0) {
             maxHp = 1;
         }
-        if(dmg <= 0){
+        if (dmg <= 0) {
             dmg = 1;
         }
-        if(playerNr <= 0){
+        if (playerNr <= 0) {
             throw new IllegalStateException("Player number must be set!");
         }
-        if(point == null){
-            point = new nu.te4.arena_shooter.entities.Point(0,0);
+        if (point == null) {
+            point = new nu.te4.arena_shooter.entities.Point(0, 0);
         }
         return new Player(this);
     }

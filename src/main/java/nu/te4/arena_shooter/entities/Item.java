@@ -8,9 +8,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-/**
- * @author erikh
- */
 public class Item extends Entity {
 
     private Effect effect;
@@ -37,6 +34,10 @@ public class Item extends Entity {
         this.dead = dead;
     }
 
+    /**
+     *
+     * @return Returns this object as JsonObject
+     */
     public JsonObject toJson() {
         String itemType = "none";
 
