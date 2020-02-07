@@ -61,7 +61,7 @@ public class WSEndpoint {
                         }
                     }
                 }
-                getJsonMessenger().gameStateMessage(gameBean.getGame(lobby));
+                getJsonMessenger().gameStateMessage(gameBean.getGame(lobby), lobby);
             }
         } catch (Exception e) {
             LOGGER.error("Error in WSEndpoint.onMessage" + e.getMessage());

@@ -45,6 +45,7 @@ public class GameBean {
         }
         if (!inGame) {
             user.getUserProperties().put("lobby", lobby);
+            getJsonMessenger().fullGameInfo(GAMES.get(lobby).getGame(), Integer.parseInt(lobby));
             return getJsonMessenger().updateUsersMessage();
         }
         return "";
@@ -58,7 +59,7 @@ public class GameBean {
     public void startGame(int lobby) {
         if (!GAMES.containsKey(lobby)) {
             GAMES.put(lobby, creatGame(lobby));
-            getJsonMessenger().fullGameInfo(GAMES.get(lobby).getGame());
+            getJsonMessenger().fullGameInfo(GAMES.get(lobby).getGame(), lobby);
         }
     }
 
@@ -143,7 +144,7 @@ public class GameBean {
         // Adds scheduler to run update() every second and send current game state after update
         Thread update = new Thread(() -> {
             gameHandler.update();
-            getJsonMessenger().gameStateMessage(GAMES.get(lobby).getGame());
+            getJsonMessenger().gameStateMessage(GAMES.get(lobby).getGame(), lobby);
             if (gameHandler.getGame().isFinished()) {
                 for (Session session : SessionHandler.SESSIONS) {
                     if (Integer.parseInt((String) session.getUserProperties().get("playerNr")) == GAMES.get(lobby).getGame().getWinner().getPlayerNr()) {

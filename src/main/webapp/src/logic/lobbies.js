@@ -102,11 +102,14 @@ export function updateLobbyStates(users, lobbyCount, playerNr) {
         const joinButton = document.getElementById(`join:${i}`);
         const startButton = document.getElementById(`start:${i}`);
         const inputField = document.getElementById(`input:${i}`);
+        joinButton.disabled = false;
+        startButton.disabled = true;
+        inputField.disabled = true;
         for (const user of users) {
             if (user.playerNr == playerNr) {
                 lobbyId = user.lobby;
             }
-            if (user.lobby == i) {
+            if (user.lobby == lobbyId) {
                 usersInLobbyCount++;
             }
         }
@@ -116,10 +119,6 @@ export function updateLobbyStates(users, lobbyCount, playerNr) {
             if (usersInLobbyCount >= 2) {
                 startButton.disabled = false;
             }
-        } else {
-            joinButton.disabled = false;
-            startButton.disabled = true;
-            inputField.disabled = true;
         }
     }
 }

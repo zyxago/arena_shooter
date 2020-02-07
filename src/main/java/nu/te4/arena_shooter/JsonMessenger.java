@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.json.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.websocket.Session;
 
 public class JsonMessenger {
@@ -26,13 +27,11 @@ public class JsonMessenger {
      *
      * @param game Game to get state from
      */
-    public void gameStateMessage(Game game) {
+    public void gameStateMessage(Game game, int lobby) {
         try {
             for (Session session : SessionHandler.SESSIONS) {
-                for (Player player : game.getPlayers()) {
-                    if (Integer.toString(player.getPlayerNr()).equals(session.getUserProperties().get("playerNr"))) {
-                        session.getBasicRemote().sendText(game.jsonStringState());
-                    }
+                if (Integer.parseInt((String) session.getUserProperties().get("lobby")) == lobby) {
+                    session.getBasicRemote().sendText(game.jsonStringState());
                 }
             }
         } catch (Exception e) {
@@ -50,7 +49,6 @@ public class JsonMessenger {
     }
 
     /**
-     *
      * @return Returns String that specifies how many lobbies to create
      */
     public String lobbyMessage() {
@@ -62,7 +60,6 @@ public class JsonMessenger {
     }
 
     /**
-     *
      * @return
      */
     private JsonArray usersJson() {
@@ -86,7 +83,7 @@ public class JsonMessenger {
     public String newUserMessage(Session user) {
         JsonObject jsonMessage = Json.createObjectBuilder()
                 .add("type", "newUser")
-                .add("playerNr", (String)user.getUserProperties().get("playerNr"))
+                .add("playerNr", (String) user.getUserProperties().get("playerNr"))
                 .build();
         return jsonMessage.toString();
     }
@@ -120,13 +117,11 @@ public class JsonMessenger {
      *
      * @param game Game to get state from
      */
-    public void fullGameInfo(Game game) {
+    public void fullGameInfo(Game game, int lobby) {
         try {
             for (Session session : SessionHandler.SESSIONS) {
-                for (Player player : game.getPlayers()) {
-                    if (Integer.toString(player.getPlayerNr()).equals(session.getUserProperties().get("playerNr"))) {
-                        session.getBasicRemote().sendText(game.jsonStringFullGame());
-                    }
+                if (Integer.parseInt((String) session.getUserProperties().get("lobby")) == lobby) {
+                    session.getBasicRemote().sendText(game.jsonStringFullGame());
                 }
             }
         } catch (Exception e) {
