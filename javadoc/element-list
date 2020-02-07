@@ -1,0 +1,9 @@
+nu.te4.arena_shooter
+nu.te4.arena_shooter.beans
+nu.te4.arena_shooter.entities
+nu.te4.arena_shooter.entities.effects
+nu.te4.arena_shooter.entities.player
+nu.te4.arena_shooter.entities.tiles
+nu.te4.arena_shooter.entities.tiles.spawns
+nu.te4.arena_shooter.interfaces
+nu.te4.arena_shooter.resources
