@@ -4,6 +4,7 @@ import nu.te4.arena_shooter.entities.Item;
 import nu.te4.arena_shooter.entities.Point;
 import nu.te4.arena_shooter.entities.effects.AttackUp;
 import nu.te4.arena_shooter.entities.effects.HealUp;
+import nu.te4.arena_shooter.entities.effects.MaxHpUP;
 import nu.te4.arena_shooter.interfaces.Spawner;
 
 import java.util.Date;
@@ -33,10 +34,13 @@ public class SpawnItem implements Spawner {
     @Override
     public Item spawn(Point spawnPoint) {
         setPrevSpawn(new Date().getTime());
-        if (Math.random() > .1) {
-            return new Item(spawnPoint, new HealUp());
+        double rate = Math.random();
+        if (rate < .1) {
+            return new Item(spawnPoint, new AttackUp());
+        } else if(rate >= .1 && rate < .2){
+            return new Item(spawnPoint, new MaxHpUP());
         }
-        return new Item(spawnPoint, new AttackUp());
+        return new Item(spawnPoint, new HealUp());
     }
 
     public float getCooldown() {

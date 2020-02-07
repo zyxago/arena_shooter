@@ -24,7 +24,6 @@ export function createLobbies(amount) {
         tabButton.innerHTML = `Lobby #${i}`;
         tabButton.addEventListener("click", () => changeLobbyTab(i, amount));
 
-        lobby.className = "column";
         lobby.id = `lobbyContainer:${i}`;
         lobby.style.display = "none";
 
@@ -36,24 +35,27 @@ export function createLobbies(amount) {
 
         areaUsers.id = `lobby:${i}`;
         areaUsers.readOnly = true;
-        areaUsers.cols = 14;
+        areaUsers.style.width = "9vw";
         areaUsers.rows = 14;
 
         areaChat.id = `chat:${i}`;
         areaChat.readOnly = true;
-        areaChat.cols = 34;
+        areaChat.style.width = "20vw";
         areaChat.rows = 22;
 
         input.id = `input:${i}`;
         input.type = "text";
-        input.style.width = "60%";
+        input.style.width = "20vw";
+        input.placeholder = "Say something...";
 
         buttonJoin.className = "button";
         buttonJoin.id = `join:${i}`;
+        buttonJoin.style.width = "4.5vw";
         buttonJoin.innerHTML = "Join";
 
         buttonStart.className = "button";
         buttonStart.id = `start:${i}`;
+        buttonStart.style.width = "4.5vw";
         buttonStart.innerHTML = "Start";
 
         textAreaDiv.append(areaChat);

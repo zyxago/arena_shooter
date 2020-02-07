@@ -26,6 +26,8 @@ export default class Item {
         } else if (this.item === "attack") {
             ctx.fillStyle = "rgb(154,20,132)";
             ctx.fillRect(this.point.x * tileSize + offset / 2, this.point.y * tileSize + offset / 2, tileSize - offset, tileSize - offset);
+        } else if(this.item === "maxHp"){
+            createDrop(this.point.x * tileSize + tileSize / 4, this.point.y * tileSize + tileSize / 4, .7, "rgb(255,237,69)", ctx);
         }
 
     }

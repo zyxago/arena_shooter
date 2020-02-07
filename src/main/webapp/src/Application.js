@@ -9,7 +9,7 @@ export default class Application {
      * Main application
      */
     constructor() {
-        this.url = "ws://localhost:8080/arena_shooter/endpoint";
+        this.url = `ws://${location.host}/arena_shooter/endpoint`;
         this.ws = new WebSocket(this.url);
         this.canvas = new Canvas(document.getElementById("canvas"));
         this.moveKeyEnabled = true;

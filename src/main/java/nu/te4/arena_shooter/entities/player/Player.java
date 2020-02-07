@@ -40,6 +40,9 @@ public class Player extends Entity implements Moveable {
 
     public void setHp(int hp) {
         this.hp = hp;
+        if(hp > getMaxHp()){
+            this.hp = getMaxHp();
+        }
     }
 
     public int getMaxHp() {
@@ -79,7 +82,6 @@ public class Player extends Entity implements Moveable {
     }
 
     /**
-     *
      * @return Returns this object as JsonObject
      */
     public JsonObject toJson() {

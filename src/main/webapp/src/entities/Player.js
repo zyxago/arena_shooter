@@ -35,7 +35,7 @@ export default class Player {
             if (!(this.hp > i)) {
                 fill = false;
             }
-            createDrop(this.point.x * tileSize + tileSize / 3 * i, this.point.y * tileSize - tileSize / 2, .5, fill, ctx);
+            createDrop(this.point.x * tileSize + tileSize / this.maxHp * i, this.point.y * tileSize - tileSize / 2, .5, fill, ctx);
         }
     }
 }

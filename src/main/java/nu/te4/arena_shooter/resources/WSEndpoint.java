@@ -37,9 +37,10 @@ public class WSEndpoint {
             // If new user set username and start lobby
             if (user.getUserProperties().get("username") == null && msgType.equals("name")) {
                 broadcastMessege(userBean.initUser(user, message));
-                // If user wants to join a lobby, check if option is available then put user in new lobby
+                broadcastMessege(userBean.chat(user, "has joined the lobby!"));
             } else if (msgType.equals("join")) {
                 broadcastMessege(gameBean.joinGameLobby(user, message));
+                broadcastMessege(userBean.chat(user, "has joined the lobby!"));
             } else if (msgType.equals("chat")) {
                 broadcastMessege(userBean.chat(user, message));
             } else {

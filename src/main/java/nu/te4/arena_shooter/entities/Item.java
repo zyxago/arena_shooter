@@ -2,6 +2,7 @@ package nu.te4.arena_shooter.entities;
 
 import nu.te4.arena_shooter.entities.effects.AttackUp;
 import nu.te4.arena_shooter.entities.effects.HealUp;
+import nu.te4.arena_shooter.entities.effects.MaxHpUP;
 import nu.te4.arena_shooter.interfaces.Effect;
 
 import javax.json.Json;
@@ -47,6 +48,8 @@ public class Item extends Entity {
             itemType = "heal";
         } else if(effect instanceof AttackUp){
             itemType = "attack";
+        } else if(effect instanceof MaxHpUP){
+            itemType = "maxHp";
         }
         item.add("item", itemType);
         return item.build();

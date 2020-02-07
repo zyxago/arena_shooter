@@ -2,6 +2,8 @@
 @import "../../node_modules/bulma/bulma.sass";
 
 $Main-background-color: #f5f5dc;
+$Secondary-background-color: #b3b39a;
+$border-color: $dark;
 
 html {
   background-color: $Main-background-color;
@@ -11,42 +13,68 @@ body {
   margin: 10px 10px 10px 10px;
 }
 
-.columns{
+.columns {
+  .column {
+    flex-grow: 0;
+    flex-basis: auto;
+    padding: 0;
+    margin: 0 10px 10px 10px;
+  }
+
+  #canvas {
+    background-color: white;
+    border: 10px solid black;
+  }
+
+  .activeTab {
+    background-color: $primary;
+  }
+
+  #tabs {
+    .button {
+      border-color: $border-color;
+    }
+
+    .button:focus {
+      border-color: $border-color;
+    }
+
+    .button:hover {
+      border-color: $border-color;
+    }
+    border-bottom: 1px solid $border-color;
+    display: flex;
+    justify-content: space-around;
+    background-color: $Secondary-background-color;
+    padding: 10px 0 10px 0;
+  }
+
+  #textareas {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .column:nth-child(1n+2) {
+    background-color: $Secondary-background-color;
+    border: 2px solid $dark;
+  }
+
+  margin-top: 5px;
   align-items: flex-start;
 }
 
-.column {
-  flex-grow: 0;
-  flex-basis: auto;
-}
-
-.tile{
+.tile {
+  span {
+    padding-left: 15px;
+  }
   background-color: $Main-background-color;
 }
 
-#controls{
+.label {
+  padding: 0 10px 0 8px;
+  margin: 0;
+}
+
+#controls {
   padding-left: 10%;
-}
-
-#canvas{
-  background-color: white;
-  border: 10px solid black;
-}
-
-.activeTab{
-  background-color: $primary;
-}
-
-#tabs{
-  display: flex;
-  justify-content: space-between;
-}
-
-#textareas{
-  display: flex;
-  align-items: flex-start;
-}
-
-span{
-  padding-left: 15px;
 }

@@ -135,7 +135,7 @@ public class GameBean {
         }
 
         GameHandler gameHandler = new GameHandler(new GameBuilder()
-                .Grid(new GridFactory().getGrid(16, 16, .2f, 5))
+                .Grid(new GridFactory().getGrid(16, 16, .2f, 7))
                 .Players(players)
                 .build());
         gameHandler.randomizePlayerPos();
