@@ -61,7 +61,7 @@ public class GameHandler {
                         try {
                             session.getBasicRemote().sendText(JsonMessenger.getJsonMessenger().gameLost());
                         } catch (Exception e) {
-                            System.out.println("Error in GameHandler.checkPlayerBulletCollision: " + e.getMessage());
+                            LOGGER.error("Error in GameHandler.checkPlayerBulletCollision: " + e.getMessage());
                         }
                     }
                 }

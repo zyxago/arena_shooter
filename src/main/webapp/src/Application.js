@@ -12,12 +12,12 @@ export default class Application {
         this.url = `ws://${location.host}/arena_shooter/endpoint`;
         this.ws = new WebSocket(this.url);
         this.canvas = new Canvas(document.getElementById("canvas"));
-        this.moveKeyEnabled = true;
-        this.attackKeyEnabled = true;
+        this.moveCooldown = 100;
+        this.attackCooldown = 100;
+        this.lastMoveTime = new Date();
+        this.lastAttackTime = new Date();
         this.moveListener = this.moveListener.bind(this);
-        this.enableMoveListener = this.enableMoveListener.bind(this);
         this.attackListener = this.attackListener.bind(this);
-        this.enableAttackListener = this.enableAttackListener.bind(this);
         this.ws.addEventListener("message", e => {
             const data = JSON.parse(e.data);
             switch (data.type) {
@@ -70,45 +70,31 @@ export default class Application {
 
     addGameListeners() {
         addEventListener("keydown", this.moveListener);
-        addEventListener("keyup", this.enableMoveListener);
         addEventListener("keydown", this.attackListener);
-        addEventListener("keyup", this.enableAttackListener);
     }
 
     moveListener(e) {
-        if (this.moveKeyEnabled) {
-            this.moveKeyEnabled = false;
+        if (this.lastMoveTime.getTime() + this.moveCooldown <= new Date().getTime()) {
+            this.lastMoveTime = new Date();
             send(this.ws, "move", moveAction(e))
         }
     }
 
-    enableMoveListener() {
-        this.moveKeyEnabled = true
-    }
-
     attackListener(e) {
-        if (this.attackKeyEnabled) {
-            this.attackKeyEnabled = false;
+        if (this.lastAttackTime.getTime() + this.attackCooldown <= new Date().getTime()) {
+            this.lastAttackTime = new Date();
             send(this.ws, "attack", attackAction(e))
         }
-    }
-
-    enableAttackListener() {
-        this.attackKeyEnabled = true
     }
 
     removeGameListeners() {
         removeEventListener("keydown", this.moveListener);
         removeEventListener("keydown", this.attackListener);
-        removeEventListener("keyup", this.enableMoveListener);
-        removeEventListener("keyup", this.enableAttackListener);
     }
 
     destroyGame() {
         this.removeGameListeners();
         this.game = undefined;
-        this.attackKeyEnabled = true;
-        this.moveKeyEnabled = true;
         this.canvas.ctx.clearRect(0, 0, this.canvas.canvas.width, this.canvas.canvas.height);
     }
 }

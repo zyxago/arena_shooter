@@ -8,10 +8,11 @@ public class PlayerFactory {
      * @param color    Color of player
      * @return Returns a player object
      */
-    public Player getStandardPlayer(int playerNr, PlayerColor color) {
+    public Player getStandardPlayer(int playerNr, PlayerColor color, String name) {
         return new PlayerBuilder().Color(color)
                 .Hp(3)
                 .MaxHp(3)
+                .Name(name)
                 .PlayerNr(playerNr).build();
     }
 }

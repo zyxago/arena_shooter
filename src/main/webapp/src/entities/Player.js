@@ -9,8 +9,9 @@ export default class Player {
      * @param {Number}maxHp
      * @param {Point}point
      * @param {Number}playerNr
+     * @param {String}name
      */
-    constructor({color, lobby, hp, maxHp, point, playerNr}) {
+    constructor({color, lobby, hp, maxHp, point, playerNr, name}) {
         this.name = name;
         this.color = color;
         this.lobby = lobby;
@@ -37,5 +38,8 @@ export default class Player {
             }
             createDrop(this.point.x * tileSize + tileSize / this.maxHp * i, this.point.y * tileSize - tileSize / 2, .5, fill, ctx);
         }
+        ctx.fillStyle = "rgb(0,0,0)";
+        ctx.font = `${offset*1.5}px Arial`;
+        ctx.fillText(this.name, this.point.x * tileSize + offset / 2, (this.point.y * tileSize + offset / 2) + tileSize);
     }
 }

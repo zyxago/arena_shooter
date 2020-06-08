@@ -45,6 +45,12 @@ public class GameBean {
         }
         if (!inGame) {
             user.getUserProperties().put("lobby", lobby);
+            //TODO check if needed
+            //----
+            if(GAMES.containsKey(lobby)) {
+                getJsonMessenger().fullGameInfo(GAMES.get(lobby).getGame(), Integer.parseInt(lobby));
+            }
+            //----
             return getJsonMessenger().updateUsersMessage();
         }
         return "";
@@ -129,8 +135,9 @@ public class GameBean {
         List<Player> players = new ArrayList<>();
         for (Session session : SessionHandler.SESSIONS) {
             int playerNr = Integer.parseInt((String) session.getUserProperties().get("playerNr"));
+            String playerName = (String)session.getUserProperties().get("username");
             if ((session.getUserProperties().get("lobby")).equals(Integer.toString(lobby))) {
-                players.add(new PlayerFactory().getStandardPlayer(playerNr, new PlayerColor(r.nextInt(255), r.nextInt(255), r.nextInt(255))));
+                players.add(new PlayerFactory().getStandardPlayer(playerNr, new PlayerColor(r.nextInt(255), r.nextInt(255), r.nextInt(255)), playerName));
             }
         }
 
@@ -140,7 +147,7 @@ public class GameBean {
                 .build());
         gameHandler.randomizePlayerPos();
 
-        // Adds scheduler to run update() every second and send current game state after update
+        // Adds scheduler to run update() every 100 milliseconds and send current game state after update
         Thread update = new Thread(() -> {
             gameHandler.update();
             getJsonMessenger().gameStateMessage(GAMES.get(lobby).getGame());

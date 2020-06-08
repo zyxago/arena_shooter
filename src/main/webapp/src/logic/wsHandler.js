@@ -55,7 +55,7 @@ export function updateUsers(users, lobbyCount) {
  * @param {number}id Id of lobby to join
  */
 export function joinLobby(ws, id) {
-    send(ws, "join", id);
+    send(ws, "join", id.toString());
 }
 
 /**

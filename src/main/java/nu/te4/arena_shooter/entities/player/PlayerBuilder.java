@@ -3,6 +3,7 @@ package nu.te4.arena_shooter.entities.player;
 import nu.te4.arena_shooter.entities.Point;
 
 public class PlayerBuilder {
+    private String name;
     private int hp;
     private int maxHp;
     private int dmg;
@@ -16,6 +17,9 @@ public class PlayerBuilder {
     }
 
     public Player build() throws IllegalStateException {
+        if(name == null){
+            throw new IllegalStateException("Player must have a name!");
+        }
         if (color == null) {
             throw new IllegalStateException("Color must be set!");
         }
@@ -43,6 +47,15 @@ public class PlayerBuilder {
 
     public PlayerBuilder Point(Point point) {
         this.point = point;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public PlayerBuilder Name(String name) {
+        this.name = name;
         return this;
     }
 

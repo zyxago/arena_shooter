@@ -56,7 +56,7 @@ public class JsonMessenger {
     public String lobbyMessage() {
         JsonObject jsonMessage = Json.createObjectBuilder()
                 .add("type", "lobbyCount")
-                .add("lobbies", 4)
+                .add("lobbies", 5)
                 .build();
         return jsonMessage.toString();
     }

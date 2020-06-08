@@ -10,6 +10,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
 public class Player extends Entity implements Moveable {
+    private String name;
     private int hp;
     private int maxHp;
     private int dmg;
@@ -19,6 +20,7 @@ public class Player extends Entity implements Moveable {
 
     public Player(PlayerBuilder build) {
         super(build.getPoint());
+        name = build.getName();
         hp = build.getHp();
         maxHp = build.getMaxHp();
         dmg = build.getDmg();
@@ -81,6 +83,14 @@ public class Player extends Entity implements Moveable {
         setPoint(new Point(getPoint().getX() + dir[0], getPoint().getY() + dir[1]));
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * @return Returns this object as JsonObject
      */
@@ -93,6 +103,7 @@ public class Player extends Entity implements Moveable {
                 .add("color", color.toString())
                 .add("playerNr", getPlayerNr())
                 .add("point", factory.createObjectBuilder(getPoint().toJson()))
+                .add("name", getName())
                 .build();
     }
 }
