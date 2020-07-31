@@ -3,7 +3,9 @@
 ### About
 A Web-based game where players can join by going to the address this website is hosted on
 (example: http://its.teknikum.it:9000/arena_shooter/).
-Players can join lobbies and play against each other. 
+Players can join lobbies and play against each other.
+
+OBS: A minimum of 2 players is required to play!
 
 To attack with your figure you use the arrow keys to shoot in that direction.
 To move with your figure you use the W,A,S,D keys to move in that direction.
