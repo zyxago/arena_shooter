@@ -48,7 +48,7 @@ public class GameBean {
             //TODO check if needed
             //----
             if(GAMES.containsKey(lobby)) {
-                getJsonMessenger().fullGameInfo(GAMES.get(lobby).getGame(), Integer.parseInt(lobby));
+                getJsonMessenger().fullGameInfo(GAMES.get(lobby).getGame());
             }
             //----
             return getJsonMessenger().updateUsersMessage();

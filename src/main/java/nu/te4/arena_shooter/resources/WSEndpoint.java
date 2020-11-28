@@ -6,10 +6,10 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-import nu.te4.arena_shooter.JsonMessenger;
 import nu.te4.arena_shooter.SessionHandler;
 import nu.te4.arena_shooter.beans.GameBean;
 import nu.te4.arena_shooter.beans.UserBean;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,11 +34,12 @@ public class WSEndpoint {
         message = message.substring(message.indexOf(':') + 1);
 
         try {
-            // If new user set username and start lobby
+            // If new user set username and entering lobby
             if (user.getUserProperties().get("username") == null && msgType.equals("name")) {
                 broadcastMessege(userBean.initUser(user, message));
                 broadcastMessege(userBean.chat(user, "has joined the lobby!"));
             } else if (msgType.equals("join")) {
+                broadcastMessege(userBean.chat(user, "has left the lobby!"));
                 broadcastMessege(gameBean.joinGameLobby(user, message));
                 broadcastMessege(userBean.chat(user, "has joined the lobby!"));
             } else if (msgType.equals("chat")) {
@@ -94,7 +95,9 @@ public class WSEndpoint {
     public void close(Session user) {
         gameBean.removePlayer(user);
         SessionHandler.SESSIONS.remove(user);
+        broadcastMessege(userBean.chat(user, "disconnected"));
         broadcastMessege(getJsonMessenger().updateUsersMessage());
+
     }
 
     /**
