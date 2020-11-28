@@ -1,12 +1,16 @@
 @charset "utf-8";
 @import "../../node_modules/bulma/bulma.sass";
 
-$Main-background-color: #f5f5dc;
-$Secondary-background-color: #b3b39a;
+$Main-background-color: #373737;
+$Secondary-background-color: #373737;
 $border-color: $dark;
-
+$Text-color: #000000;
+$primary: #6a8e37;
 html {
   background-color: $Main-background-color;
+  background-image: url("../../Images/arenaShooter-bg.png");
+  background-repeat: no-repeat;;
+  background-size: cover;
 }
 
 body {
@@ -32,6 +36,7 @@ body {
 
   #tabs {
     .button {
+      color: $Text-color;
       border-color: $border-color;
     }
 
@@ -66,13 +71,14 @@ body {
 .tile {
   span {
     padding-left: 15px;
+    color: $Text-color;
   }
-  background-color: $Main-background-color;
 }
 
 .label {
   padding: 0 10px 0 8px;
   margin: 0;
+  color: $Text-color;
 }
 
 #controls {

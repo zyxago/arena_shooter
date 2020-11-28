@@ -112,6 +112,7 @@ export function updateLobbyStates(users, lobbyCount, playerNr) {
         }
         if (lobbyId == i) {
             joinButton.disabled = true;
+            startButton.disabled = true;
             inputField.disabled = false;
             if (usersInLobbyCount >= 2) {
                 startButton.disabled = false;

@@ -7102,7 +7102,10 @@ label.panel-block {
   padding: 3rem 1.5rem 6rem; }
 
 html {
-  background-color: #f5f5dc; }
+  background-color: #373737;
+  background-image: url("../../Images/arenaShooter-bg.png");
+  background-repeat: no-repeat;
+  background-size: cover; }
 
 body {
   margin: 10px 10px 10px 10px; }
@@ -7119,14 +7122,15 @@ body {
     background-color: white;
     border: 10px solid black; }
   .columns .activeTab {
-    background-color: #00d1b2; }
+    background-color: #6a8e37; }
   .columns #tabs {
     border-bottom: 1px solid #363636;
     display: flex;
     justify-content: space-around;
-    background-color: #b3b39a;
+    background-color: #373737;
     padding: 10px 0 10px 0; }
     .columns #tabs .button {
+      color: #000000;
       border-color: #363636; }
     .columns #tabs .button:focus {
       border-color: #363636; }
@@ -7136,17 +7140,17 @@ body {
     display: flex;
     align-items: flex-start; }
   .columns .column:nth-child(1n+2) {
-    background-color: #b3b39a;
+    background-color: #373737;
     border: 2px solid #363636; }
 
-.tile {
-  background-color: #f5f5dc; }
-  .tile span {
-    padding-left: 15px; }
+.tile span {
+  padding-left: 15px;
+  color: #000000; }
 
 .label {
   padding: 0 10px 0 8px;
-  margin: 0; }
+  margin: 0;
+  color: #000000; }
 
 #controls {
   padding-left: 10%; }

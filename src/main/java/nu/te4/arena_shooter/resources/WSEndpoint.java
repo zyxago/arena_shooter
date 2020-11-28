@@ -83,7 +83,6 @@ public class WSEndpoint {
         } catch (Exception e) {
             LOGGER.error("Error in WSEndpoint.open: " + e.getMessage());
         }
-
     }
 
     /**
@@ -97,7 +96,6 @@ public class WSEndpoint {
         SessionHandler.SESSIONS.remove(user);
         broadcastMessege(userBean.chat(user, "disconnected"));
         broadcastMessege(getJsonMessenger().updateUsersMessage());
-
     }
 
     /**
