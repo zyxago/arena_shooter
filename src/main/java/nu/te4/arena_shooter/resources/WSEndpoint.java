@@ -51,21 +51,23 @@ public class WSEndpoint {
                     gameBean.startGame(lobby);
                 } else {
                     if (!message.equals("")) {
-                        int playerNr = Integer.parseInt((String) user.getUserProperties().get("playerNr"));
-                        int dirX = Integer.parseInt(message.substring(0, message.indexOf(",")));
-                        int dirY = Integer.parseInt(message.substring(message.indexOf(",") + 1));
+                        if(GameBean.GAMES.containsKey(lobby)){
+                            int playerNr = Integer.parseInt((String) user.getUserProperties().get("playerNr"));
+                            int dirX = Integer.parseInt(message.substring(0, message.indexOf(",")));
+                            int dirY = Integer.parseInt(message.substring(message.indexOf(",") + 1));
 
-                        if (msgType.equals("move")) {
-                            gameBean.moveAction(playerNr, dirX, dirY, lobby);
-                        } else if (msgType.equals("attack")) {
-                            gameBean.attackAction(playerNr, dirX, dirY, lobby);
+                            if (msgType.equals("move")) {
+                                gameBean.moveAction(playerNr, dirX, dirY, lobby);
+                            } else if (msgType.equals("attack")) {
+                                gameBean.attackAction(playerNr, dirX, dirY, lobby);
+                            }
                         }
                     }
                 }
-                getJsonMessenger().gameStateMessage(gameBean.getGame(lobby));
+                getJsonMessenger().gameStateMessage(gameBean.getGame(lobby), lobby);
             }
         } catch (Exception e) {
-            LOGGER.error("Error in WSEndpoint.onMessage" + e.getMessage());
+            LOGGER.error("Error in WSEndpoint.onMessage " + e.getMessage());
         }
     }
 

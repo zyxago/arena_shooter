@@ -68,11 +68,15 @@ public class GameHandler {
             }
         }
 
+        if (getGame().getPlayers().size() <= 1) {
+            getGame().setWinner(getGame().getPlayers().get(0));
+            getGame().setFinished(true);
+        }
+
         getGame().getPlayers().removeIf(Player::isDead);
         getGame().getBullets().removeIf(Bullet::isDead);
 
-        if (getGame().getPlayers().size() <= 1) {
-            getGame().setWinner(getGame().getPlayers().get(0));
+        if(getGame().getPlayers().size() == 0){
             getGame().setFinished(true);
         }
     }

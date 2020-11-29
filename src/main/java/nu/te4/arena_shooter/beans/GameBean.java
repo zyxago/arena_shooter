@@ -9,6 +9,7 @@ import nu.te4.arena_shooter.entities.GridFactory;
 import nu.te4.arena_shooter.entities.player.Player;
 import nu.te4.arena_shooter.entities.player.PlayerColor;
 import nu.te4.arena_shooter.entities.player.PlayerFactory;
+import nu.te4.arena_shooter.resources.WSEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,7 @@ import static nu.te4.arena_shooter.JsonMessenger.getJsonMessenger;
 public class GameBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GameBean.class);
-    private static final Map<Integer, GameHandler> GAMES = new HashMap<>();
+    public static final Map<Integer, GameHandler> GAMES = new HashMap<>();
     private static final Map<Integer, ScheduledExecutorService> SCHEDULED_GAME_UPDATES = new HashMap<>();
 
     /**
@@ -150,7 +151,7 @@ public class GameBean {
         // Adds scheduler to run update() every 100 milliseconds and send current game state after update
         Thread update = new Thread(() -> {
             gameHandler.update();
-            getJsonMessenger().gameStateMessage(GAMES.get(lobby).getGame());
+            getJsonMessenger().gameStateMessage(GAMES.get(lobby).getGame(), lobby);
             if (gameHandler.getGame().isFinished()) {
                 for (Session session : SessionHandler.SESSIONS) {
                     if (Integer.parseInt((String) session.getUserProperties().get("playerNr")) == GAMES.get(lobby).getGame().getWinner().getPlayerNr()) {
@@ -159,7 +160,6 @@ public class GameBean {
                         } catch (IOException e) {
                             LOGGER.error("Error in game scheduler thread: " + e.getMessage());
                         }
-
                     }
                 }
                 destroyGame(lobby);

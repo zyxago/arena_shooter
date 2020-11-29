@@ -26,15 +26,14 @@ public class JsonMessenger {
      *
      * @param game Game to get state from
      */
-    public void gameStateMessage(Game game) {
+    public void gameStateMessage(Game game, int lobby) {
         try {
-            for (Session session : SessionHandler.SESSIONS) {
-                for (Player player : game.getPlayers()) {
-                    if (Integer.toString(player.getPlayerNr()).equals(session.getUserProperties().get("playerNr"))) {
-                        session.getBasicRemote().sendText(game.jsonStringState());
-                    }
+            for(Session session : SessionHandler.SESSIONS){
+                if(Integer.parseInt(session.getUserProperties().get("lobby").toString()) == lobby){
+                    session.getBasicRemote().sendText(game.jsonStringState());
                 }
             }
+
         } catch (Exception e) {
             LOGGER.error("Error in JsonMessenger.gameStateMessage: " + e.getMessage());
         }

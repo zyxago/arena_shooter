@@ -27,6 +27,7 @@ export default class Application {
                     this.userPlayerNr = data.playerNr;
                     break;
                 case "game":
+                    this.destroyGame();
                     this.game = new Game(data.game);
                     this.game.draw(this.canvas.ctx);
                     this.setColorTheme(data.game.players.filter(player=>player.playerNr == this.userPlayerNr)[0].color);
@@ -42,17 +43,17 @@ export default class Application {
                     updateLobbyStates(data.users, this.lobbyCount, this.userPlayerNr);
                     break;
                 case "won":
-                    this.destroyGame();
                     alert("VICTORY!");
                     break;
                 case "lost":
-                    this.destroyGame();
                     alert("DEFEAT!");
                     break;
                 case "gameState":
-                    this.game.update(data.players, data.bullets, data.items);
-                    this.canvas.ctx.clearRect(0, 0, this.canvas.canvas.width, this.canvas.canvas.height);
-                    this.game.draw(this.canvas.ctx);
+                    if(this.game !== undefined){
+                        this.game.update(data.players, data.bullets, data.items);
+                        this.canvas.ctx.clearRect(0, 0, this.canvas.canvas.width, this.canvas.canvas.height);
+                        this.game.draw(this.canvas.ctx);
+                    }
                     break;
                 case "updateChat":
                     updateLobbyChat(data);
