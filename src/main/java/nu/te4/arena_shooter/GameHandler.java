@@ -10,6 +10,7 @@ import javax.websocket.Session;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Map;
 
 public class GameHandler {
     private Game game;
@@ -57,7 +58,8 @@ public class GameHandler {
         for (Player player : getGame().getPlayers()) {
             if (player.isDead()) {
                 for (Session session : SessionHandler.SESSIONS) {
-                    if (Integer.parseInt((String) session.getUserProperties().get("playerNr")) == player.getPlayerNr()) {
+                    if (Integer.parseInt((String) session.getUserProperties().get("playerNr")) == player
+                            .getPlayerNr()) {
                         try {
                             session.getBasicRemote().sendText(JsonMessenger.getJsonMessenger().gameLost());
                         } catch (Exception e) {
@@ -68,7 +70,7 @@ public class GameHandler {
             }
         }
 
-        if (getGame().getPlayers().size() <= 1) {
+        if (getGame().getPlayers().size() == 1) {
             getGame().setWinner(getGame().getPlayers().get(0));
             getGame().setFinished(true);
         }
@@ -76,7 +78,7 @@ public class GameHandler {
         getGame().getPlayers().removeIf(Player::isDead);
         getGame().getBullets().removeIf(Bullet::isDead);
 
-        if(getGame().getPlayers().size() == 0){
+        if (getGame().getPlayers().size() == 0) {
             getGame().setFinished(true);
         }
     }
@@ -106,7 +108,6 @@ public class GameHandler {
             }
         }
     }
-
 
     /**
      * @param playerNr Attacking players number
@@ -183,7 +184,34 @@ public class GameHandler {
             }
         }
         for (Player player : getGame().getPlayers()) {
-            player.setPoint(points.get(r.nextInt(points.size())));
+            Point point = null;
+            do {
+                point = points.get(r.nextInt(points.size()));
+            } while(!IsValidSpawn(point));
+            player.setPoint(point);
         }
+    }
+
+    private boolean IsValidSpawn(Point spawnPoint) {
+        Map<Point, Tile> grid = getGame().getGrid();
+        if (spawnPoint != null && !grid.get(spawnPoint).isSolid()) {
+            for (Point point : grid.keySet()) {
+                if(!grid.get(point).isSolid()){
+                    if(point.getX() == spawnPoint.getX() + 1 && point.getY() == spawnPoint.getY()) {
+                        return true;
+                    }
+                    if(point.getX() == spawnPoint.getX() - 1 && point.getY() == spawnPoint.getY()) {
+                        return true;
+                    }
+                    if(point.getY() == spawnPoint.getY() + 1 && point.getX() == spawnPoint.getX()) {
+                        return true;
+                    }
+                    if(point.getY() == spawnPoint.getY() - 1 && point.getX() == spawnPoint.getX()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
