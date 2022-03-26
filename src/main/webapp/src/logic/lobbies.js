@@ -102,12 +102,14 @@ export function updateLobbyStates(users, lobbyCount, playerNr) {
         const joinButton = document.getElementById(`join:${i}`);
         const startButton = document.getElementById(`start:${i}`);
         const inputField = document.getElementById(`input:${i}`);
-        for (const user of users) {
-            if (user.playerNr == playerNr) {
-                lobbyId = user.lobby;
-            }
-            if (user.lobby == i) {
-                usersInLobbyCount++;
+        if (users) {
+            for (const user of users) {
+                if (user.playerNr == playerNr) {
+                    lobbyId = user.lobby;
+                }
+                if (user.lobby == i) {
+                    usersInLobbyCount++;
+                }
             }
         }
         if (lobbyId == i) {

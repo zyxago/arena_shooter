@@ -28,8 +28,11 @@ Users can also chat in the game lobbies.
 
 ### Run
 - To be able to run this project on your computer just run `npm i` in the 'webapp' folder and download the declared maven dependencies 
+- `npx webpack` to build frontend
+- `nvm package` to package java files into .war file.
 - Backend of project is built with JavaEE 8 so it is recommended to use the same java version.
 - Install an application server of your choice (wildfly 18.0.1 is tested and works).
+- `docker-compose up -d --build` to build and run the project.
 
 ### Documentation
 JavaDoc is available under the javadoc folder if you want to read it outside of the code files

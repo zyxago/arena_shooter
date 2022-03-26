@@ -15,6 +15,9 @@ import org.slf4j.LoggerFactory;
 
 import static nu.te4.arena_shooter.JsonMessenger.getJsonMessenger;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 @ServerEndpoint("/endpoint")
 public class WSEndpoint {
 
@@ -30,6 +33,7 @@ public class WSEndpoint {
      */
     @OnMessage
     public void onMessage(String message, Session user) {
+        if(message == null || user == null) return;
         String msgType = message.substring(0, message.indexOf(':'));
         message = message.substring(message.indexOf(':') + 1);
 
@@ -64,10 +68,15 @@ public class WSEndpoint {
                         }
                     }
                 }
-                getJsonMessenger().gameStateMessage(gameBean.getGame(lobby), lobby);
+                if(GameBean.GAMES.containsKey(lobby)) {
+                    getJsonMessenger().gameStateMessage(gameBean.getGame(lobby), lobby);   
+                }
             }
         } catch (Exception e) {
-            LOGGER.error("Error in WSEndpoint.onMessage " + e.getMessage());
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            LOGGER.error("Error in WSEndpoint.onMessage: " + sw.toString());
         }
     }
 
